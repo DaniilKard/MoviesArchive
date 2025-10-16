@@ -1,0 +1,24 @@
+﻿@model List<UserIndexVM>
+
+@section Title { Genres }
+@section Styles { <link rel="stylesheet" href="~/css/body.css" /> }
+
+<div id="body__header">
+    <div class="body__row_user-id">Id</div>
+    <div class="body__row_user-name">Name</div>
+    <div class="body__row_user-role">Role</div>
+    <div class="body__row_user-email">Email</div>
+    <div class="body__row_user-registration">Registration date</div>
+</div>
+<ul id="body">
+    @foreach (var user in Model)
+    {
+        <li class="body__row">
+            <div class="body__row_user-id">@user.Id</div>
+            <div class="body__row_user-name">@user.Name</div>
+            <div class="body__row_user-role">@user.Role</div>
+            <div class="body__row_user-email">@user.Email</div>
+            <div class="body__row_user-registration">@user.RegistrationDate</div>
+        </li>
+    }
+</ul>

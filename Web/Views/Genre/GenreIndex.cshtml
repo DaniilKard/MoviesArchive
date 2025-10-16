@@ -1,0 +1,27 @@
+﻿@model List<GenreVM>
+
+@section Title { Genres }
+@section Styles { <link rel="stylesheet" href="~/css/body.css" /> }
+
+<p><a asp-action="CreateGenre" asp-controller="Genre">Add new genre</a></p>
+<div id="body__header">
+    <div>Name</div>
+    <div></div>
+</div>
+<ul id="body">
+    @foreach (var genre in Model)
+    {
+        <li class="body__genre">
+            <div>@genre.Name</div>
+            <div>
+                <a asp-controller="Genre" asp-action="EditGenre" asp-route-id="@genre.Id">Edit</a> |
+                <a asp-controller="Genre" asp-action="DeleteGenre" asp-route-id="@genre.Id">Delete</a>
+            </div>
+        </li>
+    }
+</ul>
+
+@if (TempData.ContainsKey("result"))
+{
+    await Html.RenderPartialAsync("_Modal", TempData["result"]);
+}

@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@RenderSection("Title")</title>
+    @RenderSection("Styles", required: false)
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav id="nav">
+            <img id="nav_img" src="~/Images/logo.svg" />
+            <ul id="nav_list">
+                <li>
+                    <a class="nav_list_link" asp-controller="Movie" asp-action="Index">Movies</a>
+                </li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a class="nav_list_link" asp-controller="Genre" asp-action="GenreIndex">Genres</a>
+                    </li>
+                    <li>
+                        <a class="nav_list_link" asp-controller="User" asp-action="UserIndex">Users</a>
+                    </li>
+                }
+                @if (User.Identity is not null && User.Identity.IsAuthenticated)
+                {
+                    <li id="nav_list_logout">
+                        <div id="nav_list_name">@User.Identity.Name - </div>
+                        <a class="nav_list_link" asp-controller="User" asp-action="Logout">Logout</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </header>
+    <main id="main">
+        @RenderBody()
+    </main>
+<!-- <footer class="border-top">
+        <div class="container">
+            &copy; 2025 - Movies
+        </div> 
+    </footer>-->
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

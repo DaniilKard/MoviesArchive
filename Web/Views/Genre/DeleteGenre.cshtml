@@ -1,0 +1,15 @@
+﻿@model GenreVM
+
+@section Title { Delete genre }
+@section Styles { <link rel="stylesheet" href="~/css/forms.css" /> }
+
+<h2>Delete Genre</h2>
+<form asp-action="DeleteGenre" asp-controller="Genre" method="post">
+    <p>
+        <div>Genre "@Model.Name" will be deleted</div>
+    </p>
+    <p class="container-btns">
+        <button class="button" type="submit">Ok</button>
+        <a class="button" asp-controller="Genre" asp-action="GenreIndex">Cancel</a>
+    </p>
+</form>

@@ -1,0 +1,56 @@
+﻿form input:hover, form textarea:hover {
+    border: outset 2px #b1b1b1;
+}
+
+form input:focus, form textarea:focus {
+    border-color: transparent;
+}
+
+.container-btns {
+    display: flex;
+    justify-content: space-around;
+}
+
+.msg-validation {
+    color: red;
+    font-size: small;
+    display: block;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    align-items: center;
+}
+
+.form p {
+    width: 50%
+}
+
+.form__input-width-full {
+    border: solid 2px lightgray;
+    border-radius: 9px;
+    width: -moz-available;
+}
+
+.form__input-width-half {
+    border: solid 2px lightgray;
+    border-radius: 9px;
+    width: 50%;
+}
+
+.form__list {
+    border: solid 2px lightgray;
+    border-radius: 9px;
+    cursor: pointer;
+    width: -moz-available;
+}
+
+.form__list:hover {
+    background-color: #d5d5d5;
+}
+
+.form__list:active {
+    background-color: #aaa;
+}

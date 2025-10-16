@@ -1,0 +1,18 @@
+﻿@model GenreVM
+
+@section Title { Create genre }
+@section Scripts { <script src="~/js/createGenre.js"></script> }
+@section Styles { <link rel="stylesheet" href="~/css/forms.css" /> }
+
+<h2>Add new Genre</h2>
+<form asp-action="CreateGenre" asp-controller="Genre" method="post">
+    <p>
+        <label asp-for="Name">Name <small class="required-asterisk">*</small></label><br />
+        <input class="form__input-width-full" type="text" asp-for="Name" /><br />
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "msg-validation" })
+    </p>
+    <p class="container-btns">
+        <button class="button" disabled id="confirmBtn" type="submit">Confirm</button>
+        <a class="button" asp-controller="Genre" asp-action="GenreIndex">Cancel</a>
+    </p>
+</form>

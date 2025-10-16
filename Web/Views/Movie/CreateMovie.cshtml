@@ -1,0 +1,50 @@
+﻿@model MovieCreateVM
+
+@section Title { Create movie }
+@section Styles { <link rel="stylesheet" href="~/css/forms.css" /> }
+@section Scripts { <script src="~/js/createMovie.js"></script> }
+@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+<h2>Add new Movie</h2>
+
+<form class="form" asp-action="CreateMovie" asp-controller="movie" method="post">
+    <p>
+        <label asp-for="Title">Title <small class="required-asterisk">*</small></label><br />
+        <input class="form__input-width-full" id="Title" type="text" asp-for="Title" /><br />
+        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "msg-validation" })
+    </p>
+    <p>
+        <label asp-for="GenreId">Genre <small class="required-asterisk">*</small></label><br />
+        <select id="GenreId" class="form__list" asp-for="GenreId">
+            @for (int i = 0; i < Model.Genres.Count; i++)
+            {
+                var genre = Model.Genres.ElementAt(i);
+                <option value=@genre.Id>@genre.Name</option>
+            }
+        </select>
+    </p>
+    <p>
+        <label asp-for="Rating">Rating</label><br />
+        <input id="Rating" class="form__input-width-half" min="0" max="100" type="number" step="1" asp-for="Rating" /><br />
+        @Html.ValidationMessageFor(model => model.Rating, "", new { @class = "msg-validation" })
+    </p>
+    <p>
+        <label asp-for="ReleaseYear">Release Year</label><br />
+        <input id="ReleaseYear" class="form__input-width-half" min="1890" max="3000" type="number" asp-for="ReleaseYear" /><br />
+        @Html.ValidationMessageFor(model => model.ReleaseYear, "", new { @class = "msg-validation" })
+    </p>
+    <p>
+        <label asp-for="Comment">Comment</label><br />
+        <textarea id="Comment" class="form__input-width-full" asp-for="Comment"></textarea><br />
+        @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "msg-validation" })
+    </p>
+    @for (var i = 0; i < Model.Genres.Count; i++)
+    {
+        <input type="hidden" name="Genres[@i].Id" value="@Model.Genres[i].Id" />
+        <input type="hidden" name="Genres[@i].Name" value="@Model.Genres[i].Name" />
+    }
+    <p class="container-btns">
+        <button class="button" disabled id="confirmBtn" type="submit">Confirm</button>
+        <a class="button" asp-controller="Movie" asp-action="Index">Cancel</a>
+    </p>
+</form>

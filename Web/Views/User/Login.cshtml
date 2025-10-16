@@ -1,0 +1,23 @@
+﻿@model UserLoginVM
+
+@section Title { Login }
+@section Styles { <link rel="stylesheet" href="~/css/forms.css" /> }
+@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+<h2>Login</h2>
+<form asp-action="Login" asp-controller="User" method="post">
+    <p class="content-min">
+        <label asp-for="Name">Name</label><br />
+        <input class="form__input-width-full" type="text" asp-for="Name" /><br />
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "msg-validation" })
+    </p>
+    <p class="content-min">
+        <label asp-for="Password">Password</label><br />
+        <input class="form__input-width-full" asp-for="Password" type="password" /><br />
+        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "msg-validation" })
+    </p>
+    <p>
+        <small>Don't have an account? <a asp-action="Register" asp-controller="User">Sign Up</a></small>
+    </p>
+    <button class="button" id="confirmBtn" type="submit">Confirm</button>
+</form>
