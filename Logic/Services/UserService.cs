@@ -92,12 +92,11 @@ internal class UserService : IUserService
         }
         await _userRepository.UpdateUser(user);
 
-        var userDto = new UserDto
+        await _userAuthorize.Authorize(user);
+        return new UserDto
         {
             AuthorizeSuccessful = true,
         };
-        await _userAuthorize.Authorize(user);
-        return userDto;
     }
 
     public async Task<bool> UserNameExists(string name)

@@ -50,7 +50,7 @@ public class MovieService : IMovieService
 
     public async Task<List<MovieDto>> GetSortedMovies(MovieSort sort, int pageNum, int elementsOnPage, int userId)
     {
-        var moviesWithGenres = await _movieRepository.GetMoviesForIndex(sort, pageNum, elementsOnPage, userId);
+        var moviesWithGenres = await _movieRepository.GetSortedMoviesByUser(sort, pageNum, elementsOnPage, userId);
         var moviesDto = moviesWithGenres.Select(m => m.Adapt<MovieDto>()).ToList();
         return moviesDto;
     }

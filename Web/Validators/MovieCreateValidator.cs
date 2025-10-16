@@ -9,9 +9,7 @@ public class MovieCreateValidator : AbstractValidator<MovieCreateVM>
     {
         RuleFor(movieCreateVM => movieCreateVM.Title)
             .NotEmpty()
-            .MaximumLength(128)
-            .Must(t => !(t.StartsWith(" ") || t.EndsWith(" ")))
-                .WithMessage("Title can't start or end with whitespace");
+            .MaximumLength(128);
 
         RuleFor(movieCreateVM => movieCreateVM.ReleaseYear)
             .InclusiveBetween(1890, 3000).When(mcm => mcm.ReleaseYear is not null);
@@ -23,8 +21,13 @@ public class MovieCreateValidator : AbstractValidator<MovieCreateVM>
         {
             RuleFor(movieCreateVM => movieCreateVM.Comment)
                 .MaximumLength(256)
-                .Must(c => !(c.StartsWith(" ") || c.EndsWith(" ")))
-                    .WithMessage("Comment can't start or end with whitespace");
+                .Must(c => !(c.StartsWith(" ") || c.EndsWith(" "))).WithMessage("Comment can't start or end with whitespace");
+        });
+
+        When(movieCreateVM => movieCreateVM.Title is not null, () =>
+        {
+            RuleFor(movieCreateVM => movieCreateVM.Title)
+                .Must(t => !(t.StartsWith(" ") || t.EndsWith(" "))).WithMessage("Title can't start or end with whitespace");
         });
     }
 }

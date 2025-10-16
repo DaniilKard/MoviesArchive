@@ -3,7 +3,6 @@ using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using MoviesArchive.Data.Context;
 using MoviesArchive.Web.MappingConfiguration;
@@ -16,7 +15,6 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
         var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -25,11 +23,6 @@ public class Program
             containerBuilder.RegisterModule(new AutofacModule());
         });
 
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.File("Logs.txt")
-            .CreateLogger();
-
-        // Add services to the container.
         builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlite(connection));
         builder.Services.AddMvc();
         builder.Services.AddFluentValidationAutoValidation();
@@ -41,17 +34,18 @@ public class Program
         });
         builder.Services.AddHttpContextAccessor();
 
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.File("Logs.txt")
+            .CreateLogger();
+
         MovieMapsterConfig.Configure();
         GenreMapsterConfig.Configure();
         UserMapsterConfig.Configure();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
-            //app.UseExceptionHandler("/Movie/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 

@@ -78,7 +78,7 @@ public class MovieServiceTests
     }
 
     [Fact]
-    public async Task AddFileToDatabaseFilepathHasRandomCharactersTest()
+    public async Task AddFileToDatabaseFilepathRandomTest()
     {
         var iMovieRepoMock = new Mock<IMovieRepository>();
         var iGenreRepoMock = new Mock<IGenreRepository>();
@@ -95,7 +95,7 @@ public class MovieServiceTests
     }
 
     [Fact]
-    public async Task AddFileToDatabaseUserIdIsCharTest()
+    public async Task AddFileToDatabaseUserIdIsWhitespaceCharTest()
     {
         var iMovieRepoMock = new Mock<IMovieRepository>();
         var iGenreRepoMock = new Mock<IGenreRepository>();

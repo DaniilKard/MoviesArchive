@@ -47,10 +47,10 @@ form input:focus, form textarea:focus {
     width: -moz-available;
 }
 
-.form__list:hover {
-    background-color: #d5d5d5;
-}
-
-.form__list:active {
-    background-color: #aaa;
-}
+    .form__list:hover {
+        background-color: #d5d5d5;
+    }
+    
+    .form__list:active {
+        background-color: #aaa;
+    }

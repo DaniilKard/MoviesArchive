@@ -48,6 +48,7 @@ button {
     list-style: none;
     width: -moz-available;
     align-items: center;
+    font-size: 18px;
 }
 
 .nav_list_link {
@@ -220,7 +221,7 @@ button {
     border-radius: 0 7px 0 5px;
 }
 
-#modal__block_close:hover {
-    background-color: red;
-    color: white;
-}
+    #modal__block_close:hover {
+        background-color: red;
+        color: white;
+    }

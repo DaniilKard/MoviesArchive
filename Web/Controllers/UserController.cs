@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using MoviesArchive.Data.Models;
 using MoviesArchive.Logic.IServices;
 using MoviesArchive.Web.ViewModels;
-using System.Security.Claims;
 
 namespace MoviesArchive.Web.Controllers;
 

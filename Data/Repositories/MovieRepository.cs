@@ -74,7 +74,7 @@ internal class MovieRepository : IMovieRepository
         return sortedMovies;
     }
 
-    public async Task<List<Movie>> GetMoviesForIndex(MovieSort sort, int pageNum, int elementsOnPage, int userId)
+    public async Task<List<Movie>> GetSortedMoviesByUser(MovieSort sort, int pageNum, int elementsOnPage, int userId)
     {
         var sortedMovies = sort switch
         {

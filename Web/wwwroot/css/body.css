@@ -92,14 +92,14 @@
     border-radius: 12px;
 }
 
-#body__row_movie_btns_menu:hover {
-    background-color: lightgreen;
-    color: white;
-}
-
-#body__row_movie_btns_menu:active {
-    background-color: green;
-}
+    #body__row_movie_btns_menu:hover {
+        background-color: lightgreen;
+        color: white;
+    }
+    
+    #body__row_movie_btns_menu:active {
+        background-color: green;
+    }
 
 #body__row_movie_btns_container {
     background-color: white;
@@ -126,14 +126,14 @@
     border-bottom-right-radius: 22px;
 }
 
-#body__row_movie_btns_container a:hover {
-    color: blue;
-    background-color: lightgreen;
-    transition: 0.2s;
-}
-
-#body__row_movie_btns_container a:active {
-    color: white;
-    background-color: green;
-    transition: none;
-}
+    #body__row_movie_btns_container a:hover {
+        color: blue;
+        background-color: lightgreen;
+        transition: 0.2s;
+    }
+    
+    #body__row_movie_btns_container a:active {
+        color: white;
+        background-color: green;
+        transition: none;
+    }

@@ -61,6 +61,39 @@ document.getElementById("fetchMoviesBtn").addEventListener("click", () =>
             function removeModal() {
                 modal.remove();
             }
+
+            // Modal movement functionality
+            dragElement(modalBlock)
+
+            function dragElement(mblock) {
+                let blockPosX = 0, blockPosY = 0, mousePosX = 0, mousePosY = 0;
+                mblock.addEventListener("mousedown", dragMouseDown);
+
+                function dragMouseDown(e) {
+                    let btnIDs = ["modal__block_btns_confirm", "modal__block_btns_cancel", "modal__block_close"];
+                    if (!btnIDs.includes(e.target.id)) {
+                        e.preventDefault();
+                        mousePosX = e.clientX;
+                        mousePosY = e.clientY;
+                        mblock.addEventListener("mousemove", elementDrag);
+                        mblock.addEventListener("mouseup", closeDragElement);
+                    }
+                }
+
+                function elementDrag(e) {
+                    blockPosX = mousePosX - e.clientX;
+                    blockPosY = mousePosY - e.clientY;
+                    mousePosX = e.clientX;
+                    mousePosY = e.clientY;
+                    mblock.style.left = (mblock.offsetLeft - blockPosX) + "px";
+                    mblock.style.top = (mblock.offsetTop - blockPosY) + "px";
+                }
+
+                function closeDragElement() {
+                    mblock.removeEventListener("mouseup", closeDragElement);
+                    mblock.removeEventListener("mousemove", elementDrag);
+                }
+            }
         })
         .catch(error => console.error('Error in movie fetch: ', error));
 });
