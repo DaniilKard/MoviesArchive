@@ -3,5 +3,6 @@
 public enum ResultStatus
 {
     Success,
-    Failed
+    Failed,
+    NotFound
 }

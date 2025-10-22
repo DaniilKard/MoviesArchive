@@ -4,11 +4,11 @@
 @section Styles { <link rel="stylesheet" href="~/css/body.css" /> }
 
 <p><a asp-action="CreateGenre" asp-controller="Genre">Add new genre</a></p>
-<div id="body__header">
+<div class="body__header">
     <div>Name</div>
     <div></div>
 </div>
-<ul id="body">
+<ul class="body">
     @foreach (var genre in Model)
     {
         <li class="body__genre">

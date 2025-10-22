@@ -1,12 +1,11 @@
 ﻿@model string
 
-<div id="modal">
-    <div id="modal__block">
-        <button id="modal__block_close">✖</button>
-        <p id="modal__block_description">@Model</p>
-        <div id="modal__block_btns">
-            <button id="modal__block_btns_confirm">Ok</button>
-            <button id="modal__block_btns_cancel">Cancel</button>
+<div id="modal" class="modal">
+    <div id="modal__block" class="modal__block">
+        <button id="modal__block_close" class="modal__block_close">✖</button>
+        <p class="modal__block_description">@Model</p>
+        <div class="modal__block_btns">
+            <button id="modal__block_btns_confirm" class="modal__block_btns_confirm">Ok</button>
         </div>
     </div>
 </div>

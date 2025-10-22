@@ -30,37 +30,38 @@ internal class GenreService : IGenreService
 
     public async Task<ResultStatus> AddGenre(Genre genre)
     {
-        var resultStatus = ResultStatus.Failed;
         var genres = await _genreRepository.GetGenresListAsNoTracking();
-        if (!genres.Any(g => g.Name.Equals(genre.Name, StringComparison.CurrentCultureIgnoreCase)))
+        var genreExists = genres.Any(g => g.Name.Equals(genre.Name, StringComparison.CurrentCultureIgnoreCase));
+        if (!genreExists)
         {
-            resultStatus = await _genreRepository.AddGenre(genre);
+            var result = await _genreRepository.AddGenre(genre);
+            return result == 0 ? ResultStatus.Failed : ResultStatus.Success;
         }
-        return resultStatus;
+        return ResultStatus.Failed;
     }
 
     public async Task<ResultStatus> UpdateGenre(Genre genre)
     {
-        var resultStatus = ResultStatus.Failed;
         var genres = await _genreRepository.GetGenresListAsNoTracking();
-        if (!genres.Any(g => g.Name.Equals(genre.Name, StringComparison.CurrentCultureIgnoreCase)))
+        var genreExists = genres.Any(g => g.Name.Equals(genre.Name, StringComparison.CurrentCultureIgnoreCase));
+        if (!genreExists)
         {
-            resultStatus = await _genreRepository.UpdateGenre(genre);
+            var result = await _genreRepository.UpdateGenre(genre);
+            return result == 0 ? ResultStatus.Failed : ResultStatus.Success;
         }
-        return resultStatus;
+        return ResultStatus.Failed;
     }
 
     public async Task<ResultStatus> RemoveGenre(Genre genre)
     {
-        var resultStatus = ResultStatus.Failed;
         var defaultGenre = await _genreRepository.GetGenreByName("undefined");
         var genreMovies = await _movieRepository.GetMoviesByGenre(genre.Id);
-        if (genreMovies is not null && genreMovies.Count != 0)
+        if (genreMovies.Count != 0)
         {
             genreMovies.ForEach(m => m.GenreId = defaultGenre.Id);
             await _movieRepository.UpdateMovieRange(genreMovies);
         }
-        resultStatus = await _genreRepository.RemoveGenre(genre);
-        return resultStatus;
+        var result = await _genreRepository.RemoveGenre(genre);
+        return result == 0 ? ResultStatus.Failed : ResultStatus.Success;
     }
 }

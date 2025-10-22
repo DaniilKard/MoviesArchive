@@ -1,8 +1,0 @@
-2025-08-29 18:18:46.014 +03:00 [WRN] UpdateMovieRangeAsync has written 0 state entries
-2025-08-29 18:18:49.117 +03:00 [WRN] UpdateMovieRangeAsync has written 0 state entries
-2025-08-29 18:18:52.644 +03:00 [WRN] UpdateMovieRangeAsync has written 0 state entries
-2025-08-29 18:18:55.452 +03:00 [WRN] UpdateMovieRangeAsync has written 0 state entries
-2025-08-29 18:18:58.405 +03:00 [WRN] UpdateMovieRangeAsync has written 0 state entries
-2025-08-29 18:19:01.020 +03:00 [WRN] UpdateMovieRangeAsync has written 0 state entries
-2025-08-29 18:19:03.813 +03:00 [WRN] UpdateMovieRangeAsync has written 0 state entries
-2025-09-07 12:30:45.095 +03:00 [WRN] Folder contains no .md or .docx files

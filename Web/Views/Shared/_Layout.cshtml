@@ -4,15 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@RenderSection("Title")</title>
+    <link rel="icon" href="~/favicon.svg" />
     @RenderSection("Styles", required: false)
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
     <header>
-        <nav id="nav">
-            <img id="nav_img" src="~/img/logo.svg" />
-            <ul id="nav_list">
+        <nav class="nav">
+            <img class="nav_img" src="~/img/logo.svg" />
+            <ul class="nav_list">
                 <li>
                     <a class="nav_list_link" asp-controller="Movie" asp-action="Index">Movies</a>
                 </li>
@@ -27,15 +28,15 @@
                 }
                 @if (User.Identity is not null && User.Identity.IsAuthenticated)
                 {
-                    <li id="nav_list_logout">
-                        <div id="nav_list_name">@User.Identity.Name - </div>
+                    <li class="nav_list_logout">
+                        <div class="nav_list_name">@User.Identity.Name - </div>
                         <a class="nav_list_link" asp-controller="User" asp-action="Logout">Logout</a>
                     </li>
                 }
             </ul>
         </nav>
     </header>
-    <main id="main">
+    <main id="main" class="main">
         @RenderBody()
     </main>
 <!-- <footer class="border-top">

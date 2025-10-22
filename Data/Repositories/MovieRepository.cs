@@ -98,40 +98,37 @@ internal class MovieRepository : IMovieRepository
         return sortedMovies;
     }
 
-    public async Task<ResultStatus> AddMovie(Movie movie)
+    public async Task<int> AddMovie(Movie movie)
     {
         _db.Movies.Add(movie);
         var result = await _db.SaveChangesAsync();
         if (result == 0)
         {
             Log.Warning("AddMovieAsync has written 0 state entries");
-            return ResultStatus.Failed;
         }
-        return ResultStatus.Success;
+        return result;
     }
 
-    public async Task<ResultStatus> AddMovieRange(List<Movie> movies)
+    public async Task<int> AddMovieRange(List<Movie> movies)
     {
         _db.Movies.AddRange(movies);
         var result = await _db.SaveChangesAsync();
         if (result == 0)
         {
             Log.Warning("AddMovieRange has written 0 state entries");
-            return ResultStatus.Failed;
         }
-        return ResultStatus.Success;
+        return result;
     }
 
-    public async Task<ResultStatus> UpdateMovie(Movie movie)
+    public async Task<int> UpdateMovie(Movie movie)
     {
         _db.Movies.Update(movie);
         var result = await _db.SaveChangesAsync();
         if (result == 0)
         {
             Log.Warning("UpdateMovieAsync has written 0 state entries");
-            return ResultStatus.Failed;
         }
-        return ResultStatus.Success;
+        return result;
     }
 
     public async Task UpdateMovieRange(List<Movie> movies)
@@ -144,16 +141,15 @@ internal class MovieRepository : IMovieRepository
         }
     }
 
-    public async Task<ResultStatus> RemoveMovie(Movie movie)
+    public async Task<int> RemoveMovie(Movie movie)
     {
         _db.Movies.Remove(movie);
         var result = await _db.SaveChangesAsync();
         if (result == 0)
         {
             Log.Warning("RemoveMovieAsync has written 0 state entries");
-            return ResultStatus.Failed;
         }
-        return ResultStatus.Success;
+        return result;
     }
 
     public async Task<bool> MovieExists(Movie movie)

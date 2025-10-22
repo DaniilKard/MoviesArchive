@@ -12,10 +12,10 @@ public interface IMovieRepository
     Task<List<Movie>> GetSortedMoviesByUser(MovieSort sort, int pageNum, int elementsOnPage, int userId);
     Task<List<string>> GetMovieTitlesForUser(int userId);
     Task<List<Movie>> GetMoviesByGenre(int genreId);
-    Task<ResultStatus> AddMovie(Movie movie);
-    Task<ResultStatus> AddMovieRange(List<Movie> movies);
-    Task<ResultStatus> UpdateMovie(Movie movie);
+    Task<int> AddMovie(Movie movie);
+    Task<int> AddMovieRange(List<Movie> movies);
+    Task<int> UpdateMovie(Movie movie);
     Task UpdateMovieRange(List<Movie> movies);
-    Task<ResultStatus> RemoveMovie(Movie movie);
+    Task<int> RemoveMovie(Movie movie);
     Task<bool> MovieExists(Movie movie);
 }

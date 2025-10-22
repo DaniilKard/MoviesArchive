@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoviesArchive.Data.Context;
-using MoviesArchive.Data.Enums;
 using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
 using Serilog;
@@ -40,39 +39,36 @@ internal class GenreRepository : IGenreRepository
         return genres;
     }
 
-    public async Task<ResultStatus> AddGenre(Genre genre)
+    public async Task<int> AddGenre(Genre genre)
     {
         _db.Genres.Add(genre);
         var result = await _db.SaveChangesAsync();
         if (result == 0)
         {
             Log.Warning("AddGenreAsync has written 0 state entries");
-            return ResultStatus.Failed;
         }
-        return ResultStatus.Success;
+        return result;
     }
 
-    public async Task<ResultStatus> UpdateGenre(Genre genre)
+    public async Task<int> UpdateGenre(Genre genre)
     {
         _db.Genres.Update(genre);
         var result = await _db.SaveChangesAsync();
         if (result == 0)
         {
             Log.Warning("UpdateGenreAsync has written 0 state entries");
-            return ResultStatus.Failed;
         }
-        return ResultStatus.Success;
+        return result;
     }
 
-    public async Task<ResultStatus> RemoveGenre(Genre genre)
+    public async Task<int> RemoveGenre(Genre genre)
     {
         _db.Genres.Remove(genre);
         var result = await _db.SaveChangesAsync();
         if (result == 0)
         {
             Log.Warning("RemoveGenreAsync has written 0 state entries");
-            return ResultStatus.Failed;
         }
-        return ResultStatus.Success;
+        return result;
     }
 }

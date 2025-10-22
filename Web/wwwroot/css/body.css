@@ -1,4 +1,4 @@
-﻿#body {
+﻿.body {
     width: 100%;
     list-style-type: none;
     display: flex;
@@ -22,7 +22,7 @@
     justify-content: space-between;
 }
 
-#body__header {
+.body__header {
     display: flex;
     width: 100%;
     font-weight: bold;
@@ -73,7 +73,7 @@
     width: 29%;
 }
 
-#body__row_movie_btns {
+.body__row_movie_btns {
     height: 24px;
     width: 40px;
     cursor: pointer;
@@ -85,23 +85,24 @@
     margin-right: 5%;
 }
 
-#body__row_movie_btns_menu {
+.body__row_movie_btns_menu {
     width: auto;
     font-size: 15px;
     border: 1px solid blue;
     border-radius: 12px;
 }
 
-    #body__row_movie_btns_menu:hover {
+    .body__row_movie_btns_menu:hover {
         background-color: lightgreen;
         color: white;
     }
     
-    #body__row_movie_btns_menu:active {
+    .body__row_movie_btns_menu:active {
         background-color: green;
     }
 
-#body__row_movie_btns_container {
+.body__row_movie_btns_container {
+    width: max-content;
     background-color: white;
     border: solid blue 1px;
     border-radius: 22px;
@@ -112,28 +113,32 @@
     flex-direction: column;
 }
 
-#body__row_movie_btns_container_edit {
-    text-decoration: none;
-    padding: 10px 10px 0;
-    border-top-right-radius: 22px;
-    border-top-left-radius: 22px;
-}
-
-#body__row_movie_btns_container_delete {
-    text-decoration: none;
-    padding: 0 10px 10px;
-    border-bottom-left-radius: 22px;
-    border-bottom-right-radius: 22px;
-}
-
-    #body__row_movie_btns_container a:hover {
+    .body__row_movie_btns_container a:hover {
         color: blue;
         background-color: lightgreen;
         transition: 0.2s;
     }
     
-    #body__row_movie_btns_container a:active {
+    .body__row_movie_btns_container a:active {
         color: white;
         background-color: green;
         transition: none;
     }
+
+.body__row_movie_btns_container img {
+    height: 17.5px;
+}
+
+.body__row_movie_btns_container_edit {
+    text-decoration: none;
+    padding: 10px 10px 5px;
+    border-top-right-radius: 22px;
+    border-top-left-radius: 22px;
+}
+
+.body__row_movie_btns_container_delete {
+    text-decoration: none;
+    padding: 5px 10px 10px;
+    border-bottom-left-radius: 22px;
+    border-bottom-right-radius: 22px;
+}

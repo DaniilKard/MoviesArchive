@@ -11,13 +11,11 @@ namespace MoviesArchive.Web.Controllers;
 [Authorize]
 public class MovieController : Controller
 {
-    private readonly IConfiguration _config;
     private readonly IMovieService _movieService;
     private readonly IGenreService _genreService;
 
-    public MovieController(IMovieService service, IGenreService genreService, IConfiguration config)
+    public MovieController(IMovieService service, IGenreService genreService)
     {
-        _config = config;
         _movieService = service;
         _genreService = genreService;
     }
@@ -25,39 +23,27 @@ public class MovieController : Controller
     [HttpGet]
     public async Task<IActionResult> Index(MovieSort sort = MovieSort.TitleAsc, int page = 1)
     {
-        var elementsOnPage = _config.GetValue<int>("ElementsOnOnePage");
-        var userIsAdmin = User.IsInRole("Admin");
-        var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
-        var pagesCount = userIsAdmin ? 
-            await _movieService.GetPageCount(elementsOnPage) : 
-            await _movieService.GetPageCount(elementsOnPage, userId);
-        var movies = userIsAdmin ?
-            await _movieService.GetSortedMovies(sort, page, elementsOnPage) :
-            await _movieService.GetSortedMovies(sort, page, elementsOnPage, userId);
-        var movieVM = new MovieIndexVM
-        {
-            Sort = sort,
-            CurrentPage = page,
-            PagesCount = pagesCount,
-            Movies = movies
-        };
+        var userId = User.Claims.First(c => c.Type == "Id").Value;
+        var userIdNum = int.Parse(userId);
+        var movieIndexDto = User.IsInRole("Admin") ?
+            await _movieService.GetCurrentMovieIndex(sort, page) :
+            await _movieService.GetCurrentMovieIndex(sort, page, userIdNum);
+        var movieVM = movieIndexDto.Adapt<MovieIndexVM>();
         return View(movieVM);
     }
 
     [HttpGet]
     public async Task<ActionResult> AddFileToDatabase()
     {
-        var filePath = _config.GetValue<string>("MoviesFilePath");
-        if (filePath is not null)
+        var userId = User.Claims.First(c => c.Type == "Id").Value;
+        var userIdNum = int.Parse(userId);
+        var result = await _movieService.AddFileToDatabase(userIdNum);
+        return result switch
         {
-            var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
-            var result = await _movieService.AddFileToDatabase(filePath, userId);
-            if (result == ResultStatus.Success)
-            {
-                return Ok();
-            }
-        }
-        return BadRequest();
+            ResultStatus.Success => Ok(),
+            ResultStatus.NotFound => NotFound(),
+            _ => BadRequest()
+        };
     }
 
     [HttpGet]
@@ -78,9 +64,10 @@ public class MovieController : Controller
         {
             return View(model);
         }
-        var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
+        var userId = User.Claims.First(c => c.Type == "Id").Value;
+        var userIdNum = int.Parse(userId);
         var newMovie = model.Adapt<Movie>();
-        newMovie.UserId = userId;
+        newMovie.UserId = userIdNum;
         var result = await _movieService.AddMovie(newMovie);
         TempData["result"] = result == ResultStatus.Success ?
             "Movie was added successfully" : 
@@ -93,9 +80,10 @@ public class MovieController : Controller
     {
         if (id is not null)
         {
-            var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var userIdNum = int.Parse(userId);
             var movie = await _movieService.GetMovie((int)id);
-            if (movie is not null && (movie.UserId == userId || User.IsInRole("Admin")))
+            if (movie is not null && (movie.UserId == userIdNum || User.IsInRole("Admin")))
             {
                 var genres = await _genreService.GetGenresList();
                 //var movieVM = movie.BuildAdapter().AddParameters("Genre", genres).AdaptToType<MovieEditVM>();
@@ -115,8 +103,9 @@ public class MovieController : Controller
         {
             return View(model);
         }
-        var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
-        var movie = model.BuildAdapter().AddParameters("UserId", userId).AdaptToType<Movie>();
+        var userId = User.Claims.First(c => c.Type == "Id").Value;
+        var userIdNum = int.Parse(userId);
+        var movie = model.BuildAdapter().AddParameters("UserId", userIdNum).AdaptToType<Movie>();
         var result = await _movieService.UpdateMovie(movie);
         TempData["result"] = result == ResultStatus.Success ?
             $"Movie \"{movie.Title}\" was edited successfully" : "An error was encountered during movie edit operation";
@@ -128,9 +117,10 @@ public class MovieController : Controller
     {
         if (id is not null)
         {
-            var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var userIdNum = int.Parse(userId);
             var movie = await _movieService.GetMovie((int)id);
-            if (movie is not null && (movie.UserId == userId || User.IsInRole("Admin")))
+            if (movie is not null && (movie.UserId == userIdNum || User.IsInRole("Admin")))
             {
                 var movieVM = movie.Adapt<MovieDeleteVM>();
                 return View(movieVM);

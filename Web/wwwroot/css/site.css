@@ -25,7 +25,7 @@ button {
     border-radius: 10px;
 }
 
-#nav {
+.nav {
     margin-bottom: 1rem;
     border-bottom: 1px solid #dee2e6;
     flex-wrap: nowrap;
@@ -36,13 +36,13 @@ button {
     padding-block: 7px;
 }
 
-#nav_img {
+.nav_img {
     pointer-events: none;
     height: 52px;
     margin-left: 4%;
 }
 
-#nav_list {
+.nav_list {
     display: flex;
     margin-bottom: 0;
     list-style: none;
@@ -57,19 +57,19 @@ button {
     margin-right: 1rem;
 }
 
-#nav_list_name {
+.nav_list_name {
     display: flex;
     flex-grow: 1;
     align-items: center;
 }
 
-#nav_list_logout {
+.nav_list_logout {
     margin-left: auto;
     display: flex;
     gap: 5px;
 }
 
-#main {
+.main {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -122,13 +122,13 @@ button {
         background-color: lightgreen;
     }
 
-#pages {
+.pages {
     display: flex;
     gap: 40px;
     justify-content: center;
 }
 
-#pages_current {
+.pages_current {
     width: 50px;
     height: 50px;
     border-radius: 19px;
@@ -158,7 +158,7 @@ button {
     width: min-content;
 }
 
-#modal {
+.modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -169,7 +169,7 @@ button {
     justify-content: center;
 }
 
-#modal__block {
+.modal__block {
     border: solid 3px blue;
     width: 400px;
     height: 250px;
@@ -184,34 +184,34 @@ button {
     position: absolute;
 }
 
-#modal__block_description {
+.modal__block_description {
     align-self: center;
     font-size: 18px;
     text-align: center;
 }
 
-#modal_reload {
+.modal_reload {
     align-self: center;
     font-size: 18px;
     text-align: center;
 }
 
-#modal__block_btns {
+.modal__block_btns {
     display: flex;
     justify-content: space-evenly;
 }
 
-#modal__block_btns_confirm {
+.modal__block_btns_confirm {
     width: 67px;
     border-radius: 13px;
 }
 
-#modal__block_btns_cancel {
+.modal__block_btns_cancel {
     width: 67px;
     border-radius: 13px;
 }
 
-#modal__block_close {
+.modal__block_close {
     align-self: end;
     width: 30px;
     height: 30px;
@@ -221,7 +221,7 @@ button {
     border-radius: 0 7px 0 5px;
 }
 
-    #modal__block_close:hover {
+    .modal__block_close:hover {
         background-color: red;
         color: white;
     }

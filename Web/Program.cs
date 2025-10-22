@@ -23,20 +23,22 @@ public class Program
             containerBuilder.RegisterModule(new AutofacModule());
         });
 
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Warning()
+            .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
+
         builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlite(connection));
         builder.Services.AddMvc();
         builder.Services.AddFluentValidationAutoValidation();
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+        builder.Services.AddSerilog();
         builder.Services.AddControllersWithViews();       
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
         {
             options.LoginPath = "/user/login";
         });
         builder.Services.AddHttpContextAccessor();
-
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.File("Logs.txt")
-            .CreateLogger();
 
         MovieMapsterConfig.Configure();
         GenreMapsterConfig.Configure();
