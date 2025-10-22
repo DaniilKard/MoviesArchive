@@ -66,11 +66,11 @@ public class MovieController : Controller
         }
         var userId = User.Claims.First(c => c.Type == "Id").Value;
         var userIdNum = int.Parse(userId);
-        var newMovie = model.Adapt<Movie>();
-        newMovie.UserId = userIdNum;
-        var result = await _movieService.AddMovie(newMovie);
+        var movie = model.Adapt<Movie>();
+        movie.UserId = userIdNum;
+        var result = await _movieService.AddMovie(movie);
         TempData["result"] = result == ResultStatus.Success ?
-            "Movie was added successfully" : 
+            $"Movie \"{movie.Title}\" was added successfully" : 
             "Movie wasn't added. Are you sure movie with this name doesn't already exist?";
         return RedirectToAction(nameof(Index));
     }
@@ -82,13 +82,10 @@ public class MovieController : Controller
         {
             var userId = User.Claims.First(c => c.Type == "Id").Value;
             var userIdNum = int.Parse(userId);
-            var movie = await _movieService.GetMovie((int)id);
+            var movie = await _movieService.GetMovieEditDto((int)id);
             if (movie is not null && (movie.UserId == userIdNum || User.IsInRole("Admin")))
             {
-                var genres = await _genreService.GetGenresList();
-                //var movieVM = movie.BuildAdapter().AddParameters("Genre", genres).AdaptToType<MovieEditVM>();
-                var movieVM = movie.Adapt<MovieEditVM>();
-                movieVM.Genres = genres;
+                var movieVM = movie.Adapt<MovieEditVM>(); //Error
                 return View(movieVM);
             }
         }
@@ -137,7 +134,7 @@ public class MovieController : Controller
             var movie = model.Adapt<Movie>();
             var result = await _movieService.RemoveMovie(movie);
             TempData["result"] = result == ResultStatus.Success ? 
-                "Movie was deleted successfully" : "Movie was not deleted";
+                $"Movie \"{movie.Title}\" was deleted successfully" : "Movie was not deleted";
         }
         return RedirectToAction(nameof(Index));
     }

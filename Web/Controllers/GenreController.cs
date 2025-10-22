@@ -40,7 +40,7 @@ public class GenreController : Controller
             var genre = model.Adapt<Genre>();
             var result = await _genreService.AddGenre(genre);
             TempData["result"] = result == ResultStatus.Success ?
-                "Genre was added successfully" : "An error occurred while adding genre";
+                $"Genre \"{genre.Name}\" was added successfully" : "An error occurred while adding genre";
         }
         return RedirectToAction(nameof(GenreIndex));
     }
@@ -68,7 +68,7 @@ public class GenreController : Controller
             var genre = model.Adapt<Genre>();
             var result = await _genreService.UpdateGenre(genre);
             TempData["result"] = result == ResultStatus.Success ? 
-                "Genre was edited successfully" : "An error occurred while editing genre";
+                $"Genre \"{genre.Name}\" was edited successfully" : "An error occurred while editing genre";
         }
         return RedirectToAction(nameof(GenreIndex));
     }
@@ -96,7 +96,7 @@ public class GenreController : Controller
             var genre = model.Adapt<Genre>();
             var result = await _genreService.RemoveGenre(genre);
             TempData["result"] = result == ResultStatus.Success ?
-                "Genre was deleted successfully" : "An error occurred while deleting genre";
+                $"Genre \"{genre.Name}\" was deleted successfully" : "An error occurred while deleting genre";
         }
         return RedirectToAction(nameof(GenreIndex));
     }

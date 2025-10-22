@@ -7,6 +7,7 @@ namespace MoviesArchive.Logic.IServices;
 public interface IMovieService
 {
     Task<Movie> GetMovie(int id);
+    Task<MovieEditDto> GetMovieEditDto(int id);
     Task<MovieIndexDto> GetCurrentMovieIndex(MovieSort sort, int currentPage);
     Task<MovieIndexDto> GetCurrentMovieIndex(MovieSort sort, int currentPage, int userId);
     Task<ResultStatus> AddMovie(Movie movie);

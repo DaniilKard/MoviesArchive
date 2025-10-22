@@ -31,6 +31,17 @@ public class MovieService : IMovieService
         return await _movieRepository.GetMovie(id);
     }
 
+    public async Task<MovieEditDto> GetMovieEditDto(int id)
+    {
+        var movie = await _movieRepository.GetMovie(id);
+        var genres = await _genreRepository.GetGenresList();
+        var orderedGenres = genres.Where(g => g.Name != "undefined").OrderBy(g => g.Name).ToList();
+        var movieEditDto = movie.Adapt<MovieEditDto>();
+        //var movieVM = movie.BuildAdapter().AddParameters("Genre", genres).AdaptToType<MovieEditVM>();
+        movieEditDto.Genres = genres;
+        return movieEditDto;
+    }
+
     public async Task<MovieIndexDto> GetCurrentMovieIndex(MovieSort sort, int currentPage)
     {
         var elementsOnPage = _config.GetValue<int>("ElementsOnOnePage");
