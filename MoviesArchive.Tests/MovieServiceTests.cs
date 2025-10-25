@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Moq;
-using MoviesArchive.Data.Enums;
+﻿using Moq;
 using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
 using MoviesArchive.Logic.Parsers;
@@ -10,141 +8,89 @@ namespace MoviesArchive.Tests;
 
 public class MovieServiceTests
 {
-    [Fact]
-    public async Task AddFileToDatabaseNormalTest()
+    private readonly Mock<IMovieRepository> _movieRepositoryMock;
+    private readonly Mock<IGenreRepository> _genreRepositoryMock;
+    private readonly Mock<IFileParser> _fileParserMock;
+
+    public MovieServiceTests()
     {
-        var iMovieRepoMock = new Mock<IMovieRepository>();
-        var iGenreRepoMock = new Mock<IGenreRepository>();
-        var iFileParserMock = new Mock<IFileParser>();
-        var customConfigValue = new Dictionary<string, string>
-        {
-            {"MoviesFilePath", "D:\\visual_projects\\C#\\MoviesArchive movies files"}
-        };
-        var configMock = new ConfigurationBuilder().AddInMemoryCollection(customConfigValue).Build();
-
-        iFileParserMock.Setup(par => par.ParseFile("")).Returns([new(), new()]);
-        iMovieRepoMock.Setup(repo => repo.GetMovieTitlesForUser(1)).ReturnsAsync(["Movie1", "Movie2"]);
-        iGenreRepoMock.Setup(repo => repo.GetGenresList()).ReturnsAsync([new Genre(), new Genre()]);
-        iMovieRepoMock.Setup(repo => repo.AddMovieRange(null)).ReturnsAsync(1);
-
-        var service = new MovieService(iMovieRepoMock.Object, iGenreRepoMock.Object, configMock, iFileParserMock.Object);
-        var result = await service.AddFileToDatabase(1);
-
-        Assert.Equal(ResultStatus.Success, result);
+        _movieRepositoryMock = new Mock<IMovieRepository>();
+        _genreRepositoryMock = new Mock<IGenreRepository>();
+        _fileParserMock = new Mock<IFileParser>();
     }
 
     [Fact]
-    public async Task AddFileToDatabaseFilepathNullTest()
+    public async Task GetMovieEditDtoNormalInputTest()
     {
-        var iMovieRepoMock = new Mock<IMovieRepository>();
-        var iGenreRepoMock = new Mock<IGenreRepository>();
-        var iFileParserMock = new Mock<IFileParser>();
-        var customConfigValue = new Dictionary<string, string>
-        {
-            {"MoviesFilePath", null}
-        };
-        var configMock = new ConfigurationBuilder().AddInMemoryCollection(customConfigValue).Build();
+        // Arrange
+        var id = 1;
+        var movieReturn = GetMovieReturn();
+        var genresListReturn = GetGenresListReturn();
+        _movieRepositoryMock.Setup(repo => repo.GetMovie(id)).ReturnsAsync(movieReturn);
+        _genreRepositoryMock.Setup(repo => repo.GetGenresList()).ReturnsAsync(genresListReturn);
 
-        iFileParserMock.Setup(par => par.ParseFile("")).Returns([new(), new()]);
-        iMovieRepoMock.Setup(repo => repo.GetMovieTitlesForUser(1)).ReturnsAsync(["Movie1", "Movie2"]);
-        iGenreRepoMock.Setup(repo => repo.GetGenresList()).ReturnsAsync([new Genre(), new Genre()]);
-        iMovieRepoMock.Setup(repo => repo.AddMovieRange(null)).ReturnsAsync(1);
+        var service = new MovieService(_movieRepositoryMock.Object, _genreRepositoryMock.Object, _fileParserMock.Object);
+        var resultGenres = genresListReturn.Where(g => g.Name != "undefined").OrderBy(g => g.Name);
 
-        var service = new MovieService(iMovieRepoMock.Object, iGenreRepoMock.Object, configMock, iFileParserMock.Object);
-        var result = await service.AddFileToDatabase(1);
+        // Act
+        var result = await service.GetMovieEditDto(id);
 
-        Assert.Equal(ResultStatus.Failed, result);
+        // Assert
+        Assert.Equal(movieReturn.Title, result.Title);
+        Assert.Equal(resultGenres, result.Genres);
     }
 
     [Fact]
-    public async Task AddFileToDatabaseFilepathEmptyTest()
+    public async Task GetMovieEditDtoWrongIdTest()
     {
-        var iMovieRepoMock = new Mock<IMovieRepository>();
-        var iGenreRepoMock = new Mock<IGenreRepository>();
-        var iFileParserMock = new Mock<IFileParser>();
-        var customConfigValue = new Dictionary<string, string>
-        {
-            {"MoviesFilePath", ""}
-        };
-        var configMock = new ConfigurationBuilder().AddInMemoryCollection(customConfigValue).Build();
+        // Arrange
+        var id = -1;
+        var genresListReturn = GetGenresListReturn();
+        _genreRepositoryMock.Setup(repo => repo.GetGenresList()).ReturnsAsync(genresListReturn);
+        var service = new MovieService(_movieRepositoryMock.Object, _genreRepositoryMock.Object, _fileParserMock.Object);
 
-        iFileParserMock.Setup(par => par.ParseFile("")).Returns([new(), new()]);
-        iMovieRepoMock.Setup(repo => repo.GetMovieTitlesForUser(1)).ReturnsAsync(["Movie1", "Movie2"]);
-        iGenreRepoMock.Setup(repo => repo.GetGenresList()).ReturnsAsync([new Genre(), new Genre()]);
-        iMovieRepoMock.Setup(repo => repo.AddMovieRange(null)).ReturnsAsync(1);
-
-        var service = new MovieService(iMovieRepoMock.Object, iGenreRepoMock.Object, configMock, iFileParserMock.Object);
-        var result = await service.AddFileToDatabase(1);
-
-        Assert.Equal(ResultStatus.Failed, result);
+        // Act & Assert
+        await Assert.ThrowsAsync<NullReferenceException>(() => service.GetMovieEditDto(id));
     }
 
     [Fact]
-    public async Task AddFileToDatabaseUserIdNegativeTest()
+    public async Task GetMovieEditDtoIdIsCharTest()
     {
-        var iMovieRepoMock = new Mock<IMovieRepository>();
-        var iGenreRepoMock = new Mock<IGenreRepository>();
-        var iFileParserMock = new Mock<IFileParser>();
-        var customConfigValue = new Dictionary<string, string>
-        {
-            {"MoviesFilePath", "D:\\visual_projects\\C#\\MoviesArchive movies files"}
-        };
-        var configMock = new ConfigurationBuilder().AddInMemoryCollection(customConfigValue).Build();
+        // Arrange
+        var id = '1';
+        var genresListReturn = GetGenresListReturn();
+        _genreRepositoryMock.Setup(repo => repo.GetGenresList()).ReturnsAsync(genresListReturn);
+        var service = new MovieService(_movieRepositoryMock.Object, _genreRepositoryMock.Object, _fileParserMock.Object);
 
-        iFileParserMock.Setup(par => par.ParseFile("")).Returns([new(), new()]);
-        iMovieRepoMock.Setup(repo => repo.GetMovieTitlesForUser(-1)).ReturnsAsync([]);
-        iGenreRepoMock.Setup(repo => repo.GetGenresList()).ReturnsAsync([new Genre(), new Genre()]);
-        iMovieRepoMock.Setup(repo => repo.AddMovieRange(null)).ReturnsAsync(1);
-
-        var service = new MovieService(iMovieRepoMock.Object, iGenreRepoMock.Object, configMock, iFileParserMock.Object);
-        var result = await service.AddFileToDatabase(-1);
-
-        Assert.Equal(ResultStatus.Failed, result);
+        // Act & Assert
+        await Assert.ThrowsAsync<NullReferenceException>(() => service.GetMovieEditDto(id));
     }
 
-    [Fact]
-    public async Task AddFileToDatabaseFilepathRandomTest()
+    private List<Genre> GetGenresListReturn()
     {
-        var iMovieRepoMock = new Mock<IMovieRepository>();
-        var iGenreRepoMock = new Mock<IGenreRepository>();
-        var iFileParserMock = new Mock<IFileParser>();
-        var customConfigValue = new Dictionary<string, string>
+        var genres = new List<Genre>
         {
-            {"MoviesFilePath", "aXF2Xs7foN"}
+            new Genre { Id = 1, Name = "undefined" },
+            new Genre { Id = 2, Name = "Comedy" },
+            new Genre { Id = 3, Name = "Horror" },
+            new Genre { Id = 4, Name = "Drama" },
+            new Genre { Id = 5, Name = "Western" },
+            new Genre { Id = 6, Name = "Science Fiction" },
         };
-        var configMock = new ConfigurationBuilder().AddInMemoryCollection(customConfigValue).Build();
-
-        iFileParserMock.Setup(par => par.ParseFile("")).Returns([new(), new()]);
-        iMovieRepoMock.Setup(repo => repo.GetMovieTitlesForUser(1)).ReturnsAsync(["Movie1", "Movie2"]);
-        iGenreRepoMock.Setup(repo => repo.GetGenresList()).ReturnsAsync([new Genre(), new Genre()]);
-        iMovieRepoMock.Setup(repo => repo.AddMovieRange(null)).ReturnsAsync(1);
-
-        var service = new MovieService(iMovieRepoMock.Object, iGenreRepoMock.Object, configMock, iFileParserMock.Object);
-        var result = await service.AddFileToDatabase(1);
-
-        Assert.Equal(ResultStatus.Failed, result);
+        return genres;
     }
 
-    [Fact]
-    public async Task AddFileToDatabaseUserIdIsWhitespaceCharTest()
+    private Movie GetMovieReturn()
     {
-        var iMovieRepoMock = new Mock<IMovieRepository>();
-        var iGenreRepoMock = new Mock<IGenreRepository>();
-        var iFileParserMock = new Mock<IFileParser>();
-        var customConfigValue = new Dictionary<string, string>
+        var movie = new Movie
         {
-            {"MoviesFilePath", "D:\\visual_projects\\C#\\MoviesArchive movies files"}
+            Id = 1,
+            Title = "Bruce Almighty",
+            Rating = 8,
+            ReleaseYear = 2003,
+            Comment = "A great movie",
+            GenreId = 2,
         };
-        var configMock = new ConfigurationBuilder().AddInMemoryCollection(customConfigValue).Build();
-
-        iFileParserMock.Setup(par => par.ParseFile("")).Returns([new(), new()]);
-        iMovieRepoMock.Setup(repo => repo.GetMovieTitlesForUser(' ')).ReturnsAsync([]);
-        iGenreRepoMock.Setup(repo => repo.GetGenresList()).ReturnsAsync([new Genre(), new Genre()]);
-        iMovieRepoMock.Setup(repo => repo.AddMovieRange(null)).ReturnsAsync(1);
-
-        var service = new MovieService(iMovieRepoMock.Object, iGenreRepoMock.Object, configMock, iFileParserMock.Object);
-        var result = await service.AddFileToDatabase(' ');
-
-        Assert.Equal(ResultStatus.Failed, result);
+        return movie;
     }
 }

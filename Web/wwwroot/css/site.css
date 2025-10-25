@@ -170,7 +170,8 @@ button {
 }
 
 .modal__block {
-    border: solid 3px blue;
+    border: solid 1px lightgrey;
+    box-shadow: lightgray 0px 0px 10px -3px inset;
     width: 400px;
     height: 250px;
     background-color: white;

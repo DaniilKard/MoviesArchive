@@ -1,5 +1,4 @@
 ﻿using Mapster;
-using Microsoft.Extensions.Configuration;
 using MoviesArchive.Data.Enums;
 using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
@@ -15,14 +14,12 @@ public class MovieService : IMovieService
 {
     private readonly IMovieRepository _movieRepository;
     private readonly IGenreRepository _genreRepository;
-    private readonly IConfiguration _config;
     private IFileParser Parser { get; set; }
 
-    public MovieService(IMovieRepository movieRepository, IGenreRepository genreRepository, IConfiguration config, IFileParser fileParser)
+    public MovieService(IMovieRepository movieRepository, IGenreRepository genreRepository, IFileParser fileParser)
     {
         _movieRepository = movieRepository;
         _genreRepository = genreRepository;
-        _config = config;
         Parser = fileParser;
     }
 
@@ -35,41 +32,26 @@ public class MovieService : IMovieService
     {
         var movie = await _movieRepository.GetMovie(id);
         var genres = await _genreRepository.GetGenresList();
-        var orderedGenres = genres.Where(g => g.Name != "undefined").OrderBy(g => g.Name).ToList();
         var movieEditDto = movie.Adapt<MovieEditDto>();
         //var movieVM = movie.BuildAdapter().AddParameters("Genre", genres).AdaptToType<MovieEditVM>();
-        movieEditDto.Genres = genres;
+        var orderedGenres = genres.Where(g => g.Name != "undefined").OrderBy(g => g.Name).ToList();
+        movieEditDto.Genres = orderedGenres;
         return movieEditDto;
     }
 
-    public async Task<MovieIndexDto> GetCurrentMovieIndex(MovieSort sort, int currentPage)
+    public async Task<MovieIndexDto> GetIndexPageMovies(MovieSort sort, int currentPage, int userId = -1)
     {
-        var elementsOnPage = _config.GetValue<int>("ElementsOnOnePage");
-        var movieCount = await _movieRepository.GetMovieCount();
+        var elementsOnPage = Global.ElementsOnOnePage;
+
+        var movieCount = userId == -1 ? 
+            await _movieRepository.GetMovieCount() : 
+            await _movieRepository.GetMovieCount(userId);
+        var moviesWithGenres = userId == -1 ? 
+            await _movieRepository.GetSortedMovies(sort, currentPage, elementsOnPage) : 
+            await _movieRepository.GetSortedMoviesByUser(sort, currentPage, elementsOnPage, userId);
+        
         var pagesCount = (int)Math.Ceiling(movieCount / (double)elementsOnPage);
-
-        var moviesWithGenres = await _movieRepository.GetSortedMovies(sort, currentPage, elementsOnPage);
         var movies = moviesWithGenres.Select(m => m.Adapt<MovieDto>()).ToList();
-
-        var movieIndexDto = new MovieIndexDto
-        {
-            Sort = sort,
-            CurrentPage = currentPage,
-            PagesCount = pagesCount,
-            Movies = movies
-        };
-        return movieIndexDto;
-    }
-
-    public async Task<MovieIndexDto> GetCurrentMovieIndex(MovieSort sort, int currentPage, int userId)
-    {
-        var elementsOnPage = _config.GetValue<int>("ElementsOnOnePage");
-        var movieCount = await _movieRepository.GetMovieCount(userId);
-        var pagesCount = (int)Math.Ceiling(movieCount / (double)elementsOnPage);
-
-        var moviesWithGenres = await _movieRepository.GetSortedMoviesByUser(sort, currentPage, elementsOnPage, userId);
-        var movies = moviesWithGenres.Select(m => m.Adapt<MovieDto>()).ToList();
-
         var movieIndexDto = new MovieIndexDto
         {
             Sort = sort,
@@ -94,7 +76,7 @@ public class MovieService : IMovieService
 
     public async Task<ResultStatus> AddFileToDatabase(int userId)
     {
-        var filePath = _config.GetValue<string>("MoviesFilePath");
+        var filePath = Global.MoviesFilePath;
         if (filePath is null)
         {
             return ResultStatus.NotFound;

@@ -12,9 +12,7 @@
 <div class="body__header">
     @if (User.IsInRole("Admin"))
     {
-        <div class="body__row_movie-id">
-            <a class="button-sort" asp-action="Index" asp-route-sort="@(Model.Sort == MovieSort.UserIdAsc ? MovieSort.UserIdDesc : MovieSort.UserIdAsc)">User Id</a>
-            </div>
+        <div class="body__row_movie-id">User Id</div>
     }
     <div class="body__row_movie-title">
         <a class="button-sort" asp-action="Index" asp-route-sort="@(Model.Sort == MovieSort.TitleAsc ? MovieSort.TitleDesc : MovieSort.TitleAsc)">Title</a>

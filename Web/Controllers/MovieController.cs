@@ -26,8 +26,8 @@ public class MovieController : Controller
         var userId = User.Claims.First(c => c.Type == "Id").Value;
         var userIdNum = int.Parse(userId);
         var movieIndexDto = User.IsInRole("Admin") ?
-            await _movieService.GetCurrentMovieIndex(sort, page) :
-            await _movieService.GetCurrentMovieIndex(sort, page, userIdNum);
+            await _movieService.GetIndexPageMovies(sort, page) :
+            await _movieService.GetIndexPageMovies(sort, page, userIdNum);
         var movieVM = movieIndexDto.Adapt<MovieIndexVM>();
         return View(movieVM);
     }
@@ -105,7 +105,7 @@ public class MovieController : Controller
         var movie = model.BuildAdapter().AddParameters("UserId", userIdNum).AdaptToType<Movie>();
         var result = await _movieService.UpdateMovie(movie);
         TempData["result"] = result == ResultStatus.Success ?
-            $"Movie \"{movie.Title}\" was edited successfully" : "An error was encountered during movie edit operation";
+            $"Movie was edited successfully" : "An error was encountered during movie edit operation";
         return RedirectToAction(nameof(Index));
     }
 
@@ -134,7 +134,7 @@ public class MovieController : Controller
             var movie = model.Adapt<Movie>();
             var result = await _movieService.RemoveMovie(movie);
             TempData["result"] = result == ResultStatus.Success ? 
-                $"Movie \"{movie.Title}\" was deleted successfully" : "Movie was not deleted";
+                $"Movie was deleted successfully" : "Movie was not deleted";
         }
         return RedirectToAction(nameof(Index));
     }

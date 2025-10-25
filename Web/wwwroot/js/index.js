@@ -25,7 +25,7 @@ function createModal(data) {
     modalStatusMsg.className = "modal__block_description";
     modalBtnsContainer.className = "modal__block_btns";
     modalConfirmBtn.id = "modal__block_btns_confirm";
-    modalConfirmBtn.className = "modal__block_btns_confirm";
+    modalConfirmBtn.classList.add("modal__block_btns_confirm", "button");
 
     modalCloseBtn.textContent = "✖";
     modalConfirmBtn.textContent = "Ok";
@@ -51,7 +51,7 @@ function createModal(data) {
         modalBlock.append(modalReloadMsg);
 
         modalCancelBtn.id = "modal__block_btns_cancel";
-        modalCancelBtn.className = "modal__block_btns_cancel";
+        modalCancelBtn.classList.add("modal__block_btns_cancel", "button");
         modalCancelBtn.textContent = "Cancel";
         modalBtnsContainer.append(modalCancelBtn);
     }
@@ -152,7 +152,6 @@ for (let i = 0; i < movieRows.length; i++) {
 
                 document.addEventListener("click", (e) => {
                     if (e.target != linksBtn) {
-                        movieRows[i].removeEventListener("mouseleave", removeBtnsContainerOnLeave);
                         linksWrapper.remove();
                     }
                 });

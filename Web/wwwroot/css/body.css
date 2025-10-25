@@ -134,6 +134,7 @@
     padding: 10px 10px 5px;
     border-top-right-radius: 22px;
     border-top-left-radius: 22px;
+    word-spacing: 15px;
 }
 
 .body__row_movie_btns_container_delete {

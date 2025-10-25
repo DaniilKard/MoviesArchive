@@ -5,6 +5,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MoviesArchive.Data.Context;
+using MoviesArchive.Logic;
 using MoviesArchive.Web.MappingConfiguration;
 using Serilog;
 
@@ -25,7 +26,7 @@ public class Program
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Warning()
-            .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+            .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
             .CreateLogger();
 
         builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlite(connection));
@@ -39,6 +40,9 @@ public class Program
             options.LoginPath = "/user/login";
         });
         builder.Services.AddHttpContextAccessor();
+
+        Global.ElementsOnOnePage = builder.Configuration.GetValue<int>("ElementsOnOnePage");
+        Global.MoviesFilePath = builder.Configuration.GetValue<string>("MoviesFilePath");
 
         MovieMapsterConfig.Configure();
         GenreMapsterConfig.Configure();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoviesArchive.Data.Context;
 using MoviesArchive.Data.Enums;
+using MoviesArchive.Data.Extensions;
 using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
 using Serilog;
@@ -48,53 +49,15 @@ internal class MovieRepository : IMovieRepository
 
     public async Task<List<Movie>> GetSortedMovies(MovieSort sort, int pageNum, int elementsOnPage)
     {
-        var sortedMovies = sort switch
-        {
-            MovieSort.TitleAsc =>        await _db.Movies.AsNoTracking().Include(m => m.Genre)
-                .OrderBy(m => m.Title).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.TitleDesc =>       await _db.Movies.AsNoTracking().Include(m => m.Genre)
-                .OrderByDescending(m => m.Title).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.GenreAsc =>        await _db.Movies.AsNoTracking().Include(m => m.Genre)
-                .OrderBy(m => m.Genre.Name).ThenBy(m => m.Title).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.GenreDesc =>       await _db.Movies.AsNoTracking().Include(m => m.Genre)
-                .OrderByDescending(m => m.Genre.Name).ThenBy(m => m.Title).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.RatingAsc =>       await _db.Movies.AsNoTracking().Include(m => m.Genre)
-                .OrderBy(m => m.Rating == null).ThenBy(m => m.Rating).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.RatingDesc =>      await _db.Movies.AsNoTracking().Include(m => m.Genre)
-                .OrderBy(m => m.Rating == null).ThenByDescending(m => m.Rating).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.ReleaseYearAsc =>  await _db.Movies.AsNoTracking().Include(m => m.Genre)
-                .OrderBy(m => m.ReleaseYear == null).ThenBy(m => m.ReleaseYear).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.ReleaseYearDesc => await _db.Movies.AsNoTracking().Include(m => m.Genre)
-                .OrderBy(m => m.ReleaseYear == null).ThenByDescending(m => m.ReleaseYear).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.UserIdDesc =>      await _db.Movies.AsNoTracking().Include(m => m.Genre)
-                .OrderByDescending(m => m.UserId).ThenBy(m => m.Title).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            _ =>                         await _db.Movies.AsNoTracking().Include(m => m.Genre)
-                .OrderBy(m => m.UserId).ThenBy(m => m.Title).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-        };
+        var sortedMovies = await _db.Movies.AsNoTracking().Include(m => m.Genre)
+            .OrderMovies(sort).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync();
         return sortedMovies;
     }
 
     public async Task<List<Movie>> GetSortedMoviesByUser(MovieSort sort, int pageNum, int elementsOnPage, int userId)
     {
-        var sortedMovies = sort switch
-        {
-            MovieSort.TitleDesc =>       await _db.Movies.AsNoTracking().Include(m => m.Genre).Where(m => m.UserId == userId)
-                .OrderByDescending(m => m.Title).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.GenreAsc =>        await _db.Movies.AsNoTracking().Include(m => m.Genre).Where(m => m.UserId == userId)
-                .OrderBy(m => m.Genre.Name).ThenBy(m => m.Title).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.GenreDesc =>       await _db.Movies.AsNoTracking().Include(m => m.Genre).Where(m => m.UserId == userId)
-                .OrderByDescending(m => m.Genre.Name).ThenBy(m => m.Title).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.RatingAsc =>       await _db.Movies.AsNoTracking().Include(m => m.Genre).Where(m => m.UserId == userId)
-                .OrderBy(m => m.Rating == null).ThenBy(m => m.Rating).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.RatingDesc =>      await _db.Movies.AsNoTracking().Include(m => m.Genre).Where(m => m.UserId == userId)
-                .OrderBy(m => m.Rating == null).ThenByDescending(m => m.Rating).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.ReleaseYearAsc =>  await _db.Movies.AsNoTracking().Include(m => m.Genre).Where(m => m.UserId == userId)
-                .OrderBy(m => m.ReleaseYear == null).ThenBy(m => m.ReleaseYear).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            MovieSort.ReleaseYearDesc => await _db.Movies.AsNoTracking().Include(m => m.Genre).Where(m => m.UserId == userId)
-                .OrderBy(m => m.ReleaseYear == null).ThenByDescending(m => m.ReleaseYear).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-            _ =>                         await _db.Movies.AsNoTracking().Include(m => m.Genre).Where(m => m.UserId == userId)
-                .OrderBy(m => m.Title).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync(),
-        };
+        var sortedMovies = await _db.Movies.AsNoTracking().Include(m => m.Genre).Where(m => m.UserId == userId)
+            .OrderMovies(sort).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync();
         return sortedMovies;
     }
 

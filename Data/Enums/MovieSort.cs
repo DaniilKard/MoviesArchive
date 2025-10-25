@@ -9,7 +9,5 @@ public enum MovieSort
     RatingAsc,
     RatingDesc,
     ReleaseYearAsc,
-    ReleaseYearDesc,
-    UserIdAsc,
-    UserIdDesc
+    ReleaseYearDesc
 }
