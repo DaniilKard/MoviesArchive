@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using MoviesArchive.Data.Models;
 using MoviesArchive.Logic.Models;
+using MoviesArchive.Logic.ModelsDto;
 using MoviesArchive.Web.ViewModels;
 
 namespace MoviesArchive.Web.MappingConfiguration;
@@ -24,9 +25,9 @@ public class MovieMapsterConfig : TypeAdapterConfig
             .Map(dest => dest.Comment, src => src.Comment.Trim())
             .Map(dest => dest.UserId, src => MapContext.Current.Parameters["UserId"], srcCond => MapContext.Current != null);
 
-        TypeAdapterConfig<Movie, MovieEditVM>.NewConfig()
+        TypeAdapterConfig<MovieEditDto, MovieEditVM>.NewConfig()
             .Map(dest => dest.Comment, src => string.Empty, srcCond => srcCond.Comment == null)
             .Map(dest => dest.Comment, src => src.Comment)
-            .Map(dest => dest.Genres, src => MapContext.Current.Parameters["Genres"], srcCond => MapContext.Current != null);
+            .Map(dest => dest.Genres, src => (List<Genre>?)null);
     }
 }

@@ -66,8 +66,7 @@ public class MovieController : Controller
         }
         var userId = User.Claims.First(c => c.Type == "Id").Value;
         var userIdNum = int.Parse(userId);
-        var movie = model.Adapt<Movie>();
-        movie.UserId = userIdNum;
+        var movie = model.BuildAdapter().AddParameters("UserId", userIdNum).AdaptToType<Movie>();
         var result = await _movieService.AddMovie(movie);
         TempData["result"] = result == ResultStatus.Success ?
             $"Movie \"{movie.Title}\" was added successfully" : 
@@ -85,7 +84,8 @@ public class MovieController : Controller
             var movie = await _movieService.GetMovieEditDto((int)id);
             if (movie is not null && (movie.UserId == userIdNum || User.IsInRole("Admin")))
             {
-                var movieVM = movie.Adapt<MovieEditVM>(); //Error
+                var movieVM = movie.Adapt<MovieEditVM>();
+                movieVM.Genres = movie.Genres;
                 return View(movieVM);
             }
         }
@@ -95,7 +95,6 @@ public class MovieController : Controller
     [HttpPost]
     public async Task<IActionResult> EditMovie(MovieEditVM model)
     {
-
         if (!ModelState.IsValid)
         {
             return View(model);

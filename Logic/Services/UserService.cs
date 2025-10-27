@@ -44,7 +44,7 @@ internal class UserService : IUserService
             };
         }
 
-        var ipAddressDB = await _ipAddressRepository.GetIpAddress(userIp);
+        var ipAddressDB = await _ipAddressRepository.GetIpAddressWithUsers(userIp);
         user.IpAddresses = new List<IpAddress>
         {
             ipAddressDB ?? 
@@ -55,15 +55,14 @@ internal class UserService : IUserService
         };
 
         var userAdded = await _userRepository.TryAddUser(user);
-        var userDto = new UserDto
-        {
-            AuthorizeSuccessful = userAdded
-        };
         if (userAdded)
         {
             await _userAuthorize.Authorize(user);
         }
-        return userDto;
+        return new UserDto
+        {
+            AuthorizeSuccessful = userAdded
+        };
     }
 
     public async Task<UserDto> LoginUser(string name, string password, string userIp)
@@ -77,20 +76,24 @@ internal class UserService : IUserService
             };
         }
         
-        var ipAddressDB = await _ipAddressRepository.GetIpAddress(userIp);
+        var ipAddressDB = await _ipAddressRepository.GetIpAddressWithUsers(userIp);
         if (ipAddressDB is null)
         {
             var ipAddress = new IpAddress
             {
-                Value = userIp
+                Value = userIp,
+                Users = new List<User>
+                {
+                    user,
+                }
             };
-            user.IpAddresses.Add(ipAddress);
+            await _ipAddressRepository.AddIpAddress(ipAddress);
         }
-        else
+        else if (!user.IpAddresses.Contains(ipAddressDB))
         {
-            user.IpAddresses.Add(ipAddressDB);
+            ipAddressDB.Users.Add(user);
+            await _ipAddressRepository.UpdateIpAddress(ipAddressDB);
         }
-        await _userRepository.UpdateUser(user);
 
         await _userAuthorize.Authorize(user);
         return new UserDto
