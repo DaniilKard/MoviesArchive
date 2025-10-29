@@ -1,7 +1,6 @@
 ﻿using Moq;
 using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
-using MoviesArchive.Logic.Parsers;
 using MoviesArchive.Logic.Services;
 
 namespace MoviesArchive.Tests;
@@ -10,13 +9,11 @@ public class MovieServiceTests
 {
     private readonly Mock<IMovieRepository> _movieRepositoryMock;
     private readonly Mock<IGenreRepository> _genreRepositoryMock;
-    private readonly Mock<IFileParser> _fileParserMock;
 
     public MovieServiceTests()
     {
         _movieRepositoryMock = new Mock<IMovieRepository>();
         _genreRepositoryMock = new Mock<IGenreRepository>();
-        _fileParserMock = new Mock<IFileParser>();
     }
 
     [Fact]
@@ -29,7 +26,7 @@ public class MovieServiceTests
         _movieRepositoryMock.Setup(repo => repo.GetMovie(id)).ReturnsAsync(movieReturn);
         _genreRepositoryMock.Setup(repo => repo.GetGenresList()).ReturnsAsync(genresListReturn);
 
-        var service = new MovieService(_movieRepositoryMock.Object, _genreRepositoryMock.Object, _fileParserMock.Object);
+        var service = new MovieService(_movieRepositoryMock.Object, _genreRepositoryMock.Object);
         var resultGenres = genresListReturn.Where(g => g.Name != "undefined").OrderBy(g => g.Name);
 
         // Act
@@ -47,7 +44,7 @@ public class MovieServiceTests
         var id = -1;
         var genresListReturn = GetGenresListReturn();
         _genreRepositoryMock.Setup(repo => repo.GetGenresList()).ReturnsAsync(genresListReturn);
-        var service = new MovieService(_movieRepositoryMock.Object, _genreRepositoryMock.Object, _fileParserMock.Object);
+        var service = new MovieService(_movieRepositoryMock.Object, _genreRepositoryMock.Object);
 
         // Act & Assert
         await Assert.ThrowsAsync<NullReferenceException>(() => service.GetMovieEditDto(id));
@@ -60,7 +57,7 @@ public class MovieServiceTests
         var id = '1';
         var genresListReturn = GetGenresListReturn();
         _genreRepositoryMock.Setup(repo => repo.GetGenresList()).ReturnsAsync(genresListReturn);
-        var service = new MovieService(_movieRepositoryMock.Object, _genreRepositoryMock.Object, _fileParserMock.Object);
+        var service = new MovieService(_movieRepositoryMock.Object, _genreRepositoryMock.Object);
 
         // Act & Assert
         await Assert.ThrowsAsync<NullReferenceException>(() => service.GetMovieEditDto(id));

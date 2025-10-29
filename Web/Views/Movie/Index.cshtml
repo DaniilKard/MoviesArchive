@@ -6,29 +6,43 @@
 @section Styles { <link rel="stylesheet" href="~/css/body.css" /> }
 @section Scripts { <script src="~/js/index.js"></script> }
 
-<p><a asp-action="CreateMovie">Add new movie</a></p>
-<p><button type="button" id="fetchMoviesBtn">Add movies from file</button></p>
-
-<div class="body__header">
-    @if (User.IsInRole("Admin"))
-    {
-        <div class="body__row_movie-id">User Id</div>
-    }
-    <div class="body__row_movie-title">
-        <a class="button-sort" asp-action="Index" asp-route-sort="@(Model.Sort == MovieSort.TitleAsc ? MovieSort.TitleDesc : MovieSort.TitleAsc)">Title</a>
-    </div>
-    <div class="body__row_movie-genre">
-        <a class="button-sort" asp-action="Index" asp-route-sort="@(Model.Sort == MovieSort.GenreAsc ? MovieSort.GenreDesc : MovieSort.GenreAsc)">Genre</a>
-    </div>
-    <div class="body__row_movie-rating">
-        <a class="button-sort" asp-action="Index" asp-route-sort="@(Model.Sort == MovieSort.RatingDesc ? MovieSort.RatingAsc : MovieSort.RatingDesc)">Rating</a>
-    </div>
-    <div class="body__row_movie-release">
-        <a class="button-sort" asp-action="Index" asp-route-sort="@(Model.Sort == MovieSort.ReleaseYearDesc ? MovieSort.ReleaseYearAsc : MovieSort.ReleaseYearDesc)">ReleaseYear</a>
-    </div>
-    <div class="body__row_movie-comment">Comment</div>
+<div class="menu">
+    <p><a asp-action="CreateMovie">Add new movie</a></p>
+    <p><button type="button" id="fetchMoviesBtn">Add movies from file</button></p>
+    <form method="get" class="menu__search">
+        <input name="searchLine" placeholder="Search..." class="menu__search_text" type="text" />
+        <select name="searchGenreId" class="menu__search_genre">
+            <option value="0">Select genre</option>
+            @foreach (var genre in Model.Genres)
+            {
+                <option value="@genre.Id">@genre.Name</option>
+            }
+        </select>
+        <input type="hidden" name="sort" value="@Model.Sort" />
+        <button class="menu__search_submit" type="submit"><img src="~/img/magnifying_glass.svg" /></button>
+    </form>
 </div>
+
 <ul class="body">
+    <div class="body__header">
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="body__row_movie-id">User Id</div>
+        }
+        <div class="body__row_movie-title">
+            <a class="button-sort" asp-action="Index" asp-route-searchGenreId="@Model.SearchGenreId" asp-route-searchLine="@Model.SearchLine" asp-route-sort="@(Model.Sort == MovieSort.TitleAsc ? MovieSort.TitleDesc : MovieSort.TitleAsc)">Title</a>
+        </div>
+        <div class="body__row_movie-genre">
+            <a class="button-sort" asp-action="Index" asp-route-searchGenreId="@Model.SearchGenreId" asp-route-searchLine="@Model.SearchLine" asp-route-sort="@(Model.Sort == MovieSort.GenreAsc ? MovieSort.GenreDesc : MovieSort.GenreAsc)">Genre</a>
+        </div>
+        <div class="body__row_movie-rating">
+            <a class="button-sort" asp-action="Index" asp-route-searchGenreId="@Model.SearchGenreId" asp-route-searchLine="@Model.SearchLine" asp-route-sort="@(Model.Sort == MovieSort.RatingDesc ? MovieSort.RatingAsc : MovieSort.RatingDesc)">Rating</a>
+        </div>
+        <div class="body__row_movie-release">
+            <a class="button-sort" asp-action="Index" asp-route-searchGenreId="@Model.SearchGenreId" asp-route-searchLine="@Model.SearchLine" asp-route-sort="@(Model.Sort == MovieSort.ReleaseYearDesc ? MovieSort.ReleaseYearAsc : MovieSort.ReleaseYearDesc)">ReleaseYear</a>
+        </div>
+        <div class="body__row_movie-comment">Comment</div>
+    </div>
     @foreach (var movie in Model.Movies)
     {
         <li data-id="@movie.Id" class="body__row">
@@ -48,28 +62,28 @@
 <p class="pages">
     @if (Model.CurrentPage - 3 > 0)
     {
-        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-page="1">1..</a>
+        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-searchGenreId="@Model.SearchGenreId" asp-route-searchLine="@Model.SearchLine" asp-route-page="1">1..</a>
     }
     @if (Model.CurrentPage - 2 > 0)
     {
-        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-page="@(Model.CurrentPage - 2)">@(Model.CurrentPage - 2)</a>
+        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-searchGenreId="@Model.SearchGenreId" asp-route-searchLine="@Model.SearchLine" asp-route-page="@(Model.CurrentPage - 2)">@(Model.CurrentPage - 2)</a>
     }
     @if (Model.CurrentPage - 1 > 0)
     {
-        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-page="@(Model.CurrentPage - 1)">@(Model.CurrentPage - 1)</a>
+        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-searchGenreId="@Model.SearchGenreId" asp-route-searchLine="@Model.SearchLine" asp-route-page="@(Model.CurrentPage - 1)">@(Model.CurrentPage - 1)</a>
     }
-    <a class="pages_current" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-page="@Model.CurrentPage">@Model.CurrentPage</a>
+    <a class="pages_current" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-searchGenreId="@Model.SearchGenreId" asp-route-searchLine="@Model.SearchLine" asp-route-page="@Model.CurrentPage">@Model.CurrentPage</a>
     @if (Model.PagesCount - Model.CurrentPage > 0)
     {
-        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-page="@(Model.CurrentPage + 1)">@(Model.CurrentPage + 1)</a>
+        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-searchGenreId="@Model.SearchGenreId" asp-route-searchLine="@Model.SearchLine" asp-route-page="@(Model.CurrentPage + 1)">@(Model.CurrentPage + 1)</a>
     }
     @if (Model.PagesCount - Model.CurrentPage > 1)
     {
-        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-page="@(Model.CurrentPage + 2)">@(Model.CurrentPage + 2)</a>
+        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-searchGenreId="@Model.SearchGenreId" asp-route-searchLine="@Model.SearchLine" asp-route-page="@(Model.CurrentPage + 2)">@(Model.CurrentPage + 2)</a>
     }
     @if (Model.PagesCount - Model.CurrentPage > 2)
     {
-        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-page="@Model.PagesCount">..@Model.PagesCount</a>
+        <a class="pages_number" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-searchGenreId="@Model.SearchGenreId" asp-route-searchLine="@Model.SearchLine" asp-route-page="@Model.PagesCount">..@Model.PagesCount</a>
     }
 </p>
 

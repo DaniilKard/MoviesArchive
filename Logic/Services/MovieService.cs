@@ -16,11 +16,10 @@ public class MovieService : IMovieService
     private readonly IGenreRepository _genreRepository;
     private IFileParser Parser { get; set; }
 
-    public MovieService(IMovieRepository movieRepository, IGenreRepository genreRepository, IFileParser fileParser)
+    public MovieService(IMovieRepository movieRepository, IGenreRepository genreRepository)
     {
         _movieRepository = movieRepository;
         _genreRepository = genreRepository;
-        Parser = fileParser;
     }
 
     public async Task<Movie> GetMovie(int id)
@@ -39,16 +38,18 @@ public class MovieService : IMovieService
         return movieEditDto;
     }
 
-    public async Task<MovieIndexDto> GetIndexPageMovies(MovieSort sort, int currentPage, int userId = -1)
+    public async Task<MovieIndexDto> GetIndexPageMovies(MovieSort sort, int currentPage, int searchGenreId, string searchLine, int userId = -1)
     {
         var elementsOnPage = Global.ElementsOnOnePage;
 
         var movieCount = userId == -1 ? 
-            await _movieRepository.GetMovieCount() : 
-            await _movieRepository.GetMovieCount(userId);
+            await _movieRepository.GetMoviePageCount(searchGenreId, searchLine) : 
+            await _movieRepository.GetMoviePageCount(searchGenreId, searchLine, userId);
         var moviesWithGenres = userId == -1 ? 
-            await _movieRepository.GetSortedMovies(sort, currentPage, elementsOnPage) : 
-            await _movieRepository.GetSortedMoviesByUser(sort, currentPage, elementsOnPage, userId);
+            await _movieRepository.GetSortedMovies(sort, currentPage, elementsOnPage, searchGenreId, searchLine) : 
+            await _movieRepository.GetSortedMoviesByUser(sort, currentPage, elementsOnPage, searchGenreId, searchLine, userId);
+        var genres = await _genreRepository.GetGenresListAsNoTracking();
+        var orderedGenres = genres.Where(g => g.Name != "undefined").OrderBy(g => g.Name).ToList();
         
         var pagesCount = (int)Math.Ceiling(movieCount / (double)elementsOnPage);
         var movies = moviesWithGenres.Select(m => m.Adapt<MovieDto>()).ToList();
@@ -57,7 +58,10 @@ public class MovieService : IMovieService
             Sort = sort,
             CurrentPage = currentPage,
             PagesCount = pagesCount,
-            Movies = movies
+            Movies = movies,
+            Genres = orderedGenres,
+            SearchGenreId = searchGenreId,
+            SearchLine = searchLine
         };
         return movieIndexDto;
     }

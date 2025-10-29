@@ -5,11 +5,11 @@ namespace MoviesArchive.Data.Interfaces;
 
 public interface IMovieRepository
 {
-    Task<int> GetMovieCount();
-    Task<int> GetMovieCount(int userId);
+    Task<int> GetMoviePageCount(int searchGenreId, string searchLine);
+    Task<int> GetMoviePageCount(int searchGenreId, string searchLine, int userId);
     Task<Movie> GetMovie(int id);
-    Task<List<Movie>> GetSortedMovies(MovieSort sort, int pageNum, int elementsOnPage);
-    Task<List<Movie>> GetSortedMoviesByUser(MovieSort sort, int pageNum, int elementsOnPage, int userId);
+    Task<List<Movie>> GetSortedMovies(MovieSort sort, int pageNum, int elementsOnPage, int searchGenreId, string searchLine);
+    Task<List<Movie>> GetSortedMoviesByUser(MovieSort sort, int pageNum, int elementsOnPage, int searchGenreId, string searchLine, int userId);
     Task<List<string>> GetMovieTitlesForUser(int userId);
     Task<List<Movie>> GetMoviesByGenre(int genreId);
     Task<int> AddMovie(Movie movie);

@@ -7,6 +7,12 @@ internal abstract class FileParser : IFileParser
     public List<Movie> ParseFile(string filePath)
     {
         var fileLines = ReadFileLines(filePath);
+        var movies = GetMoviesFromLines(fileLines);
+        return movies;
+    }
+
+    public virtual List<Movie> GetMoviesFromLines(List<string> fileLines)
+    {
         var movies = new List<Movie>();
         var currentGenre = new Genre
         {

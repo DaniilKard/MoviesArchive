@@ -8,11 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Controllers\MovieController.cs~RF60c58201.TMP" />
-    <None Remove="Validators\MovieCreateValidator.cs~RF70b04eaf.TMP" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Autofac" Version="8.4.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />

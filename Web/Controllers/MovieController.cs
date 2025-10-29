@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MoviesArchive.Data.Enums;
 using MoviesArchive.Data.Models;
 using MoviesArchive.Logic.IServices;
+using MoviesArchive.Web.Extensions;
 using MoviesArchive.Web.ViewModels;
 
 namespace MoviesArchive.Web.Controllers;
@@ -21,13 +22,12 @@ public class MovieController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(MovieSort sort = MovieSort.TitleAsc, int page = 1)
+    public async Task<IActionResult> Index(MovieSort sort, int searchGenreId, string searchLine, int page = 1)
     {
-        var userId = User.Claims.First(c => c.Type == "Id").Value;
-        var userIdNum = int.Parse(userId);
+        var userId = User.Claims.GetUserId();
         var movieIndexDto = User.IsInRole("Admin") ?
-            await _movieService.GetIndexPageMovies(sort, page) :
-            await _movieService.GetIndexPageMovies(sort, page, userIdNum);
+            await _movieService.GetIndexPageMovies(sort, page, searchGenreId, searchLine) :
+            await _movieService.GetIndexPageMovies(sort, page, searchGenreId, searchLine, userId);
         var movieVM = movieIndexDto.Adapt<MovieIndexVM>();
         return View(movieVM);
     }
@@ -35,9 +35,8 @@ public class MovieController : Controller
     [HttpGet]
     public async Task<ActionResult> AddFileToDatabase()
     {
-        var userId = User.Claims.First(c => c.Type == "Id").Value;
-        var userIdNum = int.Parse(userId);
-        var result = await _movieService.AddFileToDatabase(userIdNum);
+        var userId = User.Claims.GetUserId();
+        var result = await _movieService.AddFileToDatabase(userId);
         return result switch
         {
             ResultStatus.Success => Ok(),
@@ -64,9 +63,8 @@ public class MovieController : Controller
         {
             return View(model);
         }
-        var userId = User.Claims.First(c => c.Type == "Id").Value;
-        var userIdNum = int.Parse(userId);
-        var movie = model.BuildAdapter().AddParameters("UserId", userIdNum).AdaptToType<Movie>();
+        var userId = User.Claims.GetUserId();
+        var movie = model.BuildAdapter().AddParameters("UserId", userId).AdaptToType<Movie>();
         var result = await _movieService.AddMovie(movie);
         TempData["result"] = result == ResultStatus.Success ?
             $"Movie \"{movie.Title}\" was added successfully" : 
@@ -79,10 +77,9 @@ public class MovieController : Controller
     {
         if (id is not null)
         {
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
-            var userIdNum = int.Parse(userId);
+            var userId = User.Claims.GetUserId();
             var movie = await _movieService.GetMovieEditDto((int)id);
-            if (movie is not null && (movie.UserId == userIdNum || User.IsInRole("Admin")))
+            if (movie is not null && (movie.UserId == userId || User.IsInRole("Admin")))
             {
                 var movieVM = movie.Adapt<MovieEditVM>();
                 movieVM.Genres = movie.Genres;
@@ -99,9 +96,8 @@ public class MovieController : Controller
         {
             return View(model);
         }
-        var userId = User.Claims.First(c => c.Type == "Id").Value;
-        var userIdNum = int.Parse(userId);
-        var movie = model.BuildAdapter().AddParameters("UserId", userIdNum).AdaptToType<Movie>();
+        var userId = User.Claims.GetUserId();
+        var movie = model.BuildAdapter().AddParameters("UserId", userId).AdaptToType<Movie>();
         var result = await _movieService.UpdateMovie(movie);
         TempData["result"] = result == ResultStatus.Success ?
             $"Movie was edited successfully" : "An error was encountered during movie edit operation";
@@ -113,10 +109,9 @@ public class MovieController : Controller
     {
         if (id is not null)
         {
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
-            var userIdNum = int.Parse(userId);
+            var userId = User.Claims.GetUserId();
             var movie = await _movieService.GetMovie((int)id);
-            if (movie is not null && (movie.UserId == userIdNum || User.IsInRole("Admin")))
+            if (movie is not null && (movie.UserId == userId || User.IsInRole("Admin")))
             {
                 var movieVM = movie.Adapt<MovieDeleteVM>();
                 return View(movieVM);

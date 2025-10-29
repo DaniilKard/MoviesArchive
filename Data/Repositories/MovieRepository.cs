@@ -17,15 +17,21 @@ internal class MovieRepository : IMovieRepository
         _db = database;
     }
 
-    public async Task<int> GetMovieCount()
+    public async Task<int> GetMoviePageCount(int searchGenreId, string searchLine)
     {
-        var count = await _db.Movies.AsNoTracking().CountAsync();
+        var count = await _db.Movies
+            .Where(m => searchGenreId == 0 || m.GenreId == searchGenreId)
+            .Where(m => searchLine == null || m.Title.Contains(searchLine))
+            .AsNoTracking().CountAsync();
         return count;
     }
 
-    public async Task<int> GetMovieCount(int userId)
+    public async Task<int> GetMoviePageCount(int searchGenreId, string searchLine, int userId)
     {
-        var count = await _db.Movies.AsNoTracking().Where(m => m.UserId == userId).CountAsync();
+        var count = await _db.Movies
+            .Where(m => searchGenreId == 0 || m.GenreId == searchGenreId)
+            .Where(m => searchLine == null || m.Title.Contains(searchLine))
+            .AsNoTracking().Where(m => m.UserId == userId).CountAsync();
         return count;
     }
 
@@ -47,17 +53,26 @@ internal class MovieRepository : IMovieRepository
         return titles;
     }
 
-    public async Task<List<Movie>> GetSortedMovies(MovieSort sort, int pageNum, int elementsOnPage)
+    public async Task<List<Movie>> GetSortedMovies(MovieSort sort, int pageNum, int elementsOnPage, int searchGenreId, string searchLine)
     {
         var sortedMovies = await _db.Movies.AsNoTracking().Include(m => m.Genre)
-            .OrderMovies(sort).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync();
+            .Where(m => searchGenreId == 0 || m.GenreId == searchGenreId)
+            .Where(m => searchLine == null || m.Title.Contains(searchLine))
+            .OrderMovies(sort)
+            .Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage)
+            .ToListAsync();
         return sortedMovies;
     }
 
-    public async Task<List<Movie>> GetSortedMoviesByUser(MovieSort sort, int pageNum, int elementsOnPage, int userId)
+    public async Task<List<Movie>> GetSortedMoviesByUser(MovieSort sort, int pageNum, int elementsOnPage, int searchGenreId, string searchLine, int userId)
     {
-        var sortedMovies = await _db.Movies.AsNoTracking().Include(m => m.Genre).Where(m => m.UserId == userId)
-            .OrderMovies(sort).Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage).ToListAsync();
+        var sortedMovies = await _db.Movies.AsNoTracking().Include(m => m.Genre)
+            .Where(m => m.UserId == userId)
+            .Where(m => searchGenreId == 0 || m.GenreId == searchGenreId)
+            .Where(m => searchLine == null || m.Title.Contains(searchLine))
+            .OrderMovies(sort)
+            .Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage)
+            .ToListAsync();
         return sortedMovies;
     }
 

@@ -3,14 +3,14 @@
 @section Title { Genres }
 @section Styles { <link rel="stylesheet" href="~/css/body.css" /> }
 
-<div class="body__header">
-    <div class="body__row_user-id">Id</div>
-    <div class="body__row_user-name">Name</div>
-    <div class="body__row_user-role">Role</div>
-    <div class="body__row_user-email">Email</div>
-    <div class="body__row_user-registration">Registration date</div>
-</div>
 <ul class="body">
+    <div class="body__header">
+        <div class="body__row_user-id">Id</div>
+        <div class="body__row_user-name">Name</div>
+        <div class="body__row_user-role">Role</div>
+        <div class="body__row_user-email">Email</div>
+        <div class="body__row_user-registration">Registration date</div>
+    </div>
     @foreach (var user in Model)
     {
         <li class="body__row">

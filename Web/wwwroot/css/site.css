@@ -26,20 +26,14 @@ button {
 }
 
 .nav {
-    margin-bottom: 1rem;
     border-bottom: 1px solid #dee2e6;
     flex-wrap: nowrap;
-    display: flex;
-    margin-right: auto;
-    margin-left: auto;
-    width: 100%;
-    padding-block: 7px;
+    padding: 7px 3%;
 }
 
 .nav_img {
     pointer-events: none;
     height: 52px;
-    margin-left: 4%;
 }
 
 .nav_list {
@@ -49,12 +43,12 @@ button {
     width: -moz-available;
     align-items: center;
     font-size: 18px;
+    gap: 20px;
 }
 
 .nav_list_link {
     text-decoration: none;
     color: rgba(0, 0, 0, 1);
-    margin-right: 1rem;
 }
 
 .nav_list_name {
@@ -73,8 +67,7 @@ button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: -moz-available;
-    margin: 0 5% 0 5%;
+    padding-top: 20px;
 }
 
 .required-asterisk {
@@ -225,4 +218,75 @@ button {
     .modal__block_close:hover {
         background-color: red;
         color: white;
+    }
+
+.menu {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: solid 1px #dee2e6;
+    margin-block: -20px 35px;
+    gap: 30px;
+    padding: 17px 3%;
+    background-color: #eee;
+}
+
+.menu p {
+    margin: 0;
+}
+
+.menu__search {
+    display: flex;
+    border: solid 1px grey;
+    border-radius: 13px;
+    background-color: #f4f4f4;
+    margin-left: auto;
+}
+
+    .menu__search:hover .menu__search_genre:has(>option[value="0"]:checked) {
+        color: #4d4d4d;
+    }
+
+.menu__search_text {
+    border-radius: 13px 0 0 13px;
+    border: none;
+    background-color: inherit;
+    padding-left: 6px;
+}
+
+    .menu__search_text:focus-visible {
+        outline: none;
+    }
+
+.menu__search_genre {
+    border-radius: unset;
+    cursor: pointer;
+    border: none;
+    background-color: inherit;
+    color: #4d4d4d;
+    transition: 0.3s;
+    transition-property: color;
+}
+
+    .menu__search_genre:hover {
+        background-color: #e3e3e3;
+    }
+
+    .menu__search_genre:focus-visible {
+        outline: none;
+    }
+
+    .menu__search_genre:has(>option[value="0"]:checked) {
+        color: transparent;
+    }
+
+.menu__search_submit {
+    border-radius: 0 13px 13px 0;
+    border: none;
+    background-color: inherit;
+    padding-inline: 8px 9px;
+}
+
+    .menu__search_submit:hover {
+        background-color: #e3e3e3;
     }
