@@ -2,7 +2,7 @@
 
 internal class MdFileParser : FileParser
 {
-    public override List<string> ReadFileLines(string filePath)
+    private protected override List<string> ReadFileLines(string filePath)
     {
         var fileLines = new List<string>();
         using var streamReader = new StreamReader(filePath);

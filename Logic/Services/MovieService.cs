@@ -73,6 +73,10 @@ public class MovieService : IMovieService
         if (!movieExists)
         {
             var result = await _movieRepository.AddMovie(movie);
+            if (result == 0)
+            {
+                Log.Warning($"{nameof(_movieRepository.AddMovie)} has written 0 state entries");
+            }
             return result == 0 ? ResultStatus.Failed : ResultStatus.Success;
         }
         return ResultStatus.Failed;
@@ -109,22 +113,26 @@ public class MovieService : IMovieService
                         movie.Comment = movie.Comment ?? "";
                     }
                     var result = await _movieRepository.AddMovieRange(moviesToAdd);
+                    if (result == 0)
+                    {
+                        Log.Warning($"{nameof(_movieRepository.AddMovieRange)} has written 0 state entries");
+                    }
                     return result == 0 ? ResultStatus.Failed : ResultStatus.Success;
                 }
             }
             else if (files.Length > 1)
             {
-                Log.Warning("Folder contains multiple .md or .docx files");
+                Log.Warning($"{nameof(AddFileToDatabase)}: Folder contains multiple .md or .docx files");
             }
             else
             {
-                Log.Warning("Folder contains no .md or .docx files");
+                Log.Warning($"{nameof(AddFileToDatabase)}: Folder contains no .md or .docx files");
                 return ResultStatus.NotFound;
             }
         }
         catch (Exception ex)
         {
-            Log.Error($"AddFileToDatabase error: {ex.Message}");
+            Log.Error($"{nameof(AddFileToDatabase)} error: {ex.Message}");
             return ResultStatus.NotFound;
         }
         return ResultStatus.Failed;
@@ -133,12 +141,20 @@ public class MovieService : IMovieService
     public async Task<ResultStatus> UpdateMovie(Movie movie)
     {
         var result = await _movieRepository.UpdateMovie(movie);
+        if (result == 0)
+        {
+            Log.Warning($"{nameof(_movieRepository.UpdateMovie)} has written 0 state entries");
+        }
         return result == 0 ? ResultStatus.Failed : ResultStatus.Success;
     }
 
     public async Task<ResultStatus> RemoveMovie(Movie movie)
     {
         var result = await _movieRepository.RemoveMovie(movie);
+        if (result == 0)
+        {
+            Log.Warning($"{nameof(_movieRepository.RemoveMovie)} has written 0 state entries");
+        }
         return result == 0 ? ResultStatus.Failed : ResultStatus.Success;
     }
 }

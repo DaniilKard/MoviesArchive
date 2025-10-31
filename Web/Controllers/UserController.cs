@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MoviesArchive.Data.Enums;
 using MoviesArchive.Data.Models;
 using MoviesArchive.Logic.IServices;
 using MoviesArchive.Web.ViewModels;
@@ -40,12 +41,10 @@ public class UserController : Controller
         {
             return View(model);
         }
-        var userIp = HttpContext.Connection.RemoteIpAddress.IsIPv4MappedToIPv6 ?
-            HttpContext.Connection.RemoteIpAddress.ToString() :
-            HttpContext.Connection.RemoteIpAddress.MapToIPv6().ToString();
+        var userIp = HttpContext.Connection.RemoteIpAddress.ToString();
 
-        var userDto = await _userService.LoginUser(model.Name, model.Password, userIp);
-        if (!userDto.AuthorizeSuccessful)
+        var result = await _userService.LoginUser(model.Name, model.Password, userIp);
+        if (result != ResultStatus.Success)
         {
             ModelState.AddModelError("Password", "Password is incorrect");
             return View(model);
@@ -67,12 +66,10 @@ public class UserController : Controller
             return View(model);
         }
         var user = model.Adapt<User>();
-        var userIp = HttpContext.Connection.RemoteIpAddress.IsIPv4MappedToIPv6 ?
-            HttpContext.Connection.RemoteIpAddress.ToString() :
-            HttpContext.Connection.RemoteIpAddress.MapToIPv6().ToString();
+        var userIp = HttpContext.Connection.RemoteIpAddress.ToString();
 
-        var userDto = await _userService.RegisterUser(user, userIp);
-        if (!userDto.AuthorizeSuccessful)
+        var result = await _userService.RegisterUser(user, userIp);
+        if (result != ResultStatus.Success)
         {
             ModelState.AddModelError("Email", "Email is already taken");
             return View(model);

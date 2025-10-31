@@ -1,0 +1,52 @@
+CREATE TABLE IF NOT EXISTS "Genres" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Genres" PRIMARY KEY AUTOINCREMENT,
+    "Name" TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "IpAddresses" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_IpAddresses" PRIMARY KEY AUTOINCREMENT,
+    "Value" TEXT NOT NULL,
+    "IsBanned" INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "Users" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Users" PRIMARY KEY AUTOINCREMENT,
+    "Name" TEXT NOT NULL,
+    "Email" TEXT NOT NULL,
+    "Password" TEXT NOT NULL,
+    "RegistrationDate" TEXT NOT NULL,
+    "Role" TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "IpAddressUser" (
+    "IpAddressesId" INTEGER NOT NULL,
+    "UsersId" INTEGER NOT NULL,
+    CONSTRAINT "PK_IpAddressUser" PRIMARY KEY ("IpAddressesId", "UsersId"),
+    CONSTRAINT "FK_IpAddressUser_IpAddresses_IpAddressesId" FOREIGN KEY ("IpAddressesId") REFERENCES "IpAddresses" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_IpAddressUser_Users_UsersId" FOREIGN KEY ("UsersId") REFERENCES "Users" ("Id") ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS "Movies" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Movies" PRIMARY KEY AUTOINCREMENT,
+    "Title" TEXT NOT NULL,
+    "Rating" INTEGER NULL,
+    "ReleaseYear" INTEGER NULL,
+    "Comment" TEXT NOT NULL,
+    "GenreId" INTEGER NOT NULL,
+    "UserId" INTEGER NOT NULL,
+    CONSTRAINT "FK_Movies_Genres_GenreId" FOREIGN KEY ("GenreId") REFERENCES "Genres" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Movies_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS "IX_IpAddressUser_UsersId" ON "IpAddressUser" ("UsersId");
+
+CREATE INDEX IF NOT EXISTS "IX_Movies_GenreId" ON "Movies" ("GenreId");
+
+CREATE INDEX IF NOT EXISTS "IX_Movies_UserId" ON "Movies" ("UserId");
+
+INSERT OR IGNORE INTO Genres (Id, Name) VALUES 
+(1, 'undefined'), (2, 'Comedy'), (3, 'Drama'), (4, 'Horror'), (5, 'Thriller'), (6, 'Detective'), (7, 'Crime'), (8, 'Action'), 
+(9, 'Adventure'), (10, 'Science Fiction'), (11, 'Fantasy'), (12, 'Animation'), (13, 'Romance'), (14, 'Western'), 
+(15, 'Documentary'), (16, 'Mystery'), (17, 'History'), (18, 'Series'), (19, 'Anime'), (20, 'Other'), (21, 'Watch Later');
+
+INSERT OR IGNORE INTO Users (Id, Name, Password, Role, Email) VALUES (1, 'admin', '12345678', 'Admin', 'admin@email.com');

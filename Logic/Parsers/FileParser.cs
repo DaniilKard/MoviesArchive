@@ -11,7 +11,7 @@ internal abstract class FileParser : IFileParser
         return movies;
     }
 
-    public virtual List<Movie> GetMoviesFromLines(List<string> fileLines)
+    private protected virtual List<Movie> GetMoviesFromLines(List<string> fileLines)
     {
         var movies = new List<Movie>();
         var currentGenre = new Genre
@@ -78,5 +78,5 @@ internal abstract class FileParser : IFileParser
         return movies;
     }
 
-    public abstract List<string> ReadFileLines(string filePath);
+    private protected abstract List<string> ReadFileLines(string filePath);
 }

@@ -5,7 +5,7 @@ namespace MoviesArchive.Logic.Parsers;
 
 internal class DocxFileParser : FileParser
 {
-    public override List<string> ReadFileLines(string filePath)
+    private protected override List<string> ReadFileLines(string filePath)
     {
         var fileLines = new List<string>();
         using var wordDoc = WordprocessingDocument.Open(filePath, false);

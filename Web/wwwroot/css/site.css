@@ -1,24 +1,66 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    line-height: 24px;
 }
 
 body {
-    margin-bottom: 60px;
+    margin-bottom: 30px;
     font-family: Arial;
+    margin: 0;
 }
 
 *, :after, :before {
     box-sizing: border-box;
 }
 
+ul {
+    margin: 0;
+}
+
+a {
+    color: royalblue;
+}
+
+p {
+    margin-top: 0;
+}
+
+small {
+    font-size: 14px;
+}
+
+button, input, optgroup, select, textare {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+[type="button"]:not(:disabled), [type="reset"]:not(:disabled), [type="submit"]:not(:disabled), button:not(:disabled) {
+    cursor: pointer;
+}
+
+img, svg {
+    vertical-align: middle;
+}
+
 @media (min-width: 768px) {
-  html {
+    html {
     font-size: 16px;
   }
 }
 
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--bs-heading-color);
+}
+
 h2 {
     margin-bottom: 25px;
+    font-size: 34px;
 }
 
 button {
@@ -27,8 +69,9 @@ button {
 
 .nav {
     border-bottom: 1px solid #dee2e6;
-    flex-wrap: nowrap;
     padding: 7px 3%;
+    display: flex;
+    flex-flow: row;
 }
 
 .nav_img {
@@ -278,6 +321,10 @@ button {
 
     .menu__search_genre:has(>option[value="0"]:checked) {
         color: transparent;
+    }
+
+    .menu__search_genre:focus:has(>option[value="0"]:checked) {
+        color: #4d4d4d;
     }
 
 .menu__search_submit {

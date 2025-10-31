@@ -2,7 +2,6 @@
 using MoviesArchive.Data.Context;
 using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
-using Serilog;
 
 namespace MoviesArchive.Data.Repositories;
 
@@ -15,9 +14,9 @@ internal class UserRepository : IUserRepository
         _db = database;
     }
 
-    public async Task<User?> GetUserWithIpAddress(string name, string password)
+    public async Task<User?> GetUser(string name, string password)
     {
-        var user = await _db.Users.Include(u => u.IpAddresses).FirstOrDefaultAsync(u => u.Name == name && u.Password == password);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Name == name && u.Password == password);
         return user;
     }
 
@@ -27,26 +26,11 @@ internal class UserRepository : IUserRepository
         return users;
     }
 
-    public async Task<bool> TryAddUser(User user)
+    public async Task<int> AddUser(User user)
     {
         _db.Users.Add(user);
         var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("TryAddUserToNewIp has written 0 state entries");
-            return false;
-        }
-        return true;
-    }
-
-    public async Task UpdateUser(User user)
-    {
-        _db.Users.Update(user);
-        var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("UpdateUser has written 0 state entries");
-        }
+        return result;
     }
 
     public async Task<bool> UserNameExists(string name)
@@ -57,8 +41,7 @@ internal class UserRepository : IUserRepository
 
     public async Task<bool> UserNameOrEmailExists(string name, string email)
     {
-        var nameOrEmailExists = await _db.Users.AsNoTracking().AnyAsync(u => 
-        u.Email.ToLower() == email.ToLower() || u.Name.ToLower() == name.ToLower());
+        var nameOrEmailExists = await _db.Users.AsNoTracking().AnyAsync(u => u.Email.ToLower() == email.ToLower() || u.Name.ToLower() == name.ToLower());
         return nameOrEmailExists;
     }
 }

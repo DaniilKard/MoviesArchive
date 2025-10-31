@@ -1,8 +1,9 @@
-﻿using MoviesArchive.Data.Interfaces;
+﻿using MoviesArchive.Data.Enums;
+using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
 using MoviesArchive.Logic.Authorization;
 using MoviesArchive.Logic.IServices;
-using MoviesArchive.Logic.ModelsDto;
+using Serilog;
 
 namespace MoviesArchive.Logic.Services;
 
@@ -26,22 +27,16 @@ internal class UserService : IUserService
         return userWithoutAdmin;
     }
 
-    public async Task<UserDto> RegisterUser(User user, string userIp)
+    public async Task<ResultStatus> RegisterUser(User user, string userIp)
     {
         if (string.IsNullOrWhiteSpace(user.Name) || string.IsNullOrWhiteSpace(user.Email))
         {
-            return new UserDto
-            {
-                AuthorizeSuccessful = false
-            };
+            return ResultStatus.Failed;
         }
         var nameOrEmailExists = await _userRepository.UserNameOrEmailExists(user.Name, user.Email);
         if (nameOrEmailExists)
         {
-            return new UserDto
-            {
-                AuthorizeSuccessful = false
-            };
+            return ResultStatus.Failed;
         }
 
         var ipAddressDB = await _ipAddressRepository.GetIpAddressWithUsers(userIp);
@@ -54,26 +49,22 @@ internal class UserService : IUserService
             }
         };
 
-        var userAdded = await _userRepository.TryAddUser(user);
-        if (userAdded)
+        var result = await _userRepository.AddUser(user);
+        if (result == 0)
         {
-            await _userAuthorize.Authorize(user);
+            Log.Warning($"{nameof(_userRepository.AddUser)} has written 0 state entries");
+            return ResultStatus.Failed;
         }
-        return new UserDto
-        {
-            AuthorizeSuccessful = userAdded
-        };
+        await _userAuthorize.Authorize(user);
+        return ResultStatus.Success;
     }
 
-    public async Task<UserDto> LoginUser(string name, string password, string userIp)
+    public async Task<ResultStatus> LoginUser(string name, string password, string userIp)
     {
-        var user = await _userRepository.GetUserWithIpAddress(name, password);
+        var user = await _userRepository.GetUser(name, password);
         if (user is null)
         {
-            return new UserDto
-            {
-                AuthorizeSuccessful = false
-            };
+            return ResultStatus.NotFound;
         }
         
         var ipAddressDB = await _ipAddressRepository.GetIpAddressWithUsers(userIp);
@@ -87,19 +78,23 @@ internal class UserService : IUserService
                     user,
                 }
             };
-            await _ipAddressRepository.AddIpAddress(ipAddress);
+            var result = await _ipAddressRepository.AddIpAddress(ipAddress);
+            if (result == 0)
+            {
+                Log.Warning($"{nameof(_ipAddressRepository.AddIpAddress)} has written 0 state entries");
+            }
         }
-        else if (!user.IpAddresses.Contains(ipAddressDB))
+        else if (!ipAddressDB.Users.Contains(user))
         {
             ipAddressDB.Users.Add(user);
-            await _ipAddressRepository.UpdateIpAddress(ipAddressDB);
+            var result = await _ipAddressRepository.UpdateIpAddress(ipAddressDB);
+            if (result == 0)
+            {
+                Log.Warning($"{nameof(_ipAddressRepository.UpdateIpAddress)} has written 0 state entries");
+            }
         }
-
         await _userAuthorize.Authorize(user);
-        return new UserDto
-        {
-            AuthorizeSuccessful = true,
-        };
+        return ResultStatus.Success;
     }
 
     public async Task<bool> UserNameExists(string name)

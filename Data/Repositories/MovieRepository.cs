@@ -4,7 +4,6 @@ using MoviesArchive.Data.Enums;
 using MoviesArchive.Data.Extensions;
 using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
-using Serilog;
 
 namespace MoviesArchive.Data.Repositories;
 
@@ -20,18 +19,18 @@ internal class MovieRepository : IMovieRepository
     public async Task<int> GetMoviePageCount(int searchGenreId, string searchLine)
     {
         var count = await _db.Movies
-            .Where(m => searchGenreId == 0 || m.GenreId == searchGenreId)
-            .Where(m => searchLine == null || m.Title.Contains(searchLine))
-            .AsNoTracking().CountAsync();
+            .AsNoTracking()
+            .Where(m => (searchGenreId == 0 || m.GenreId == searchGenreId) && (searchLine == null || m.Title.Contains(searchLine)))
+            .CountAsync();
         return count;
     }
 
     public async Task<int> GetMoviePageCount(int searchGenreId, string searchLine, int userId)
     {
         var count = await _db.Movies
-            .Where(m => searchGenreId == 0 || m.GenreId == searchGenreId)
-            .Where(m => searchLine == null || m.Title.Contains(searchLine))
-            .AsNoTracking().Where(m => m.UserId == userId).CountAsync();
+            .AsNoTracking()
+            .Where(m => (m.UserId == userId) && (searchGenreId == 0 || m.GenreId == searchGenreId) && (searchLine == null || m.Title.Contains(searchLine)))
+            .CountAsync();
         return count;
     }
 
@@ -55,23 +54,26 @@ internal class MovieRepository : IMovieRepository
 
     public async Task<List<Movie>> GetSortedMovies(MovieSort sort, int pageNum, int elementsOnPage, int searchGenreId, string searchLine)
     {
-        var sortedMovies = await _db.Movies.AsNoTracking().Include(m => m.Genre)
-            .Where(m => searchGenreId == 0 || m.GenreId == searchGenreId)
-            .Where(m => searchLine == null || m.Title.Contains(searchLine))
+        var sortedMovies = await _db.Movies
+            .AsNoTracking()
+            .Include(m => m.Genre)
+            .Where(m => (searchGenreId == 0 || m.GenreId == searchGenreId) && EF.Functions.Like(m.Title, $"%{searchLine}%"))
             .OrderMovies(sort)
-            .Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage)
+            .Skip((pageNum - 1) * elementsOnPage)
+            .Take(elementsOnPage)
             .ToListAsync();
         return sortedMovies;
     }
 
     public async Task<List<Movie>> GetSortedMoviesByUser(MovieSort sort, int pageNum, int elementsOnPage, int searchGenreId, string searchLine, int userId)
     {
-        var sortedMovies = await _db.Movies.AsNoTracking().Include(m => m.Genre)
-            .Where(m => m.UserId == userId)
-            .Where(m => searchGenreId == 0 || m.GenreId == searchGenreId)
-            .Where(m => searchLine == null || m.Title.Contains(searchLine))
+        var sortedMovies = await _db.Movies
+            .AsNoTracking()
+            .Include(m => m.Genre)
+            .Where(m => (m.UserId == userId) && (searchGenreId == 0 || m.GenreId == searchGenreId) && EF.Functions.Like(m.Title, $"%{searchLine}%"))
             .OrderMovies(sort)
-            .Skip((pageNum - 1) * elementsOnPage).Take(elementsOnPage)
+            .Skip((pageNum - 1) * elementsOnPage)
+            .Take(elementsOnPage)
             .ToListAsync();
         return sortedMovies;
     }
@@ -80,10 +82,6 @@ internal class MovieRepository : IMovieRepository
     {
         _db.Movies.Add(movie);
         var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("AddMovieAsync has written 0 state entries");
-        }
         return result;
     }
 
@@ -91,10 +89,6 @@ internal class MovieRepository : IMovieRepository
     {
         _db.Movies.AddRange(movies);
         var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("AddMovieRange has written 0 state entries");
-        }
         return result;
     }
 
@@ -102,31 +96,20 @@ internal class MovieRepository : IMovieRepository
     {
         _db.Movies.Update(movie);
         var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("UpdateMovieAsync has written 0 state entries");
-        }
         return result;
     }
 
-    public async Task UpdateMovieRange(List<Movie> movies)
+    public async Task<int> UpdateMovieRange(List<Movie> movies)
     {
         _db.Movies.UpdateRange(movies);
         var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("UpdateMovieRangeAsync has written 0 state entries");
-        }
+        return result;
     }
 
     public async Task<int> RemoveMovie(Movie movie)
     {
         _db.Movies.Remove(movie);
         var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("RemoveMovieAsync has written 0 state entries");
-        }
         return result;
     }
 

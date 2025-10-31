@@ -4,10 +4,9 @@ namespace MoviesArchive.Data.Interfaces;
 
 public interface IUserRepository
 {
-    Task<User?> GetUserWithIpAddress(string name, string password);
+    Task<User?> GetUser(string name, string password);
     Task<List<User>> GetSortedUsers();
-    Task<bool> TryAddUser(User user);
+    Task<int> AddUser(User user);
     Task<bool> UserNameExists(string name);
     Task<bool> UserNameOrEmailExists(string name, string email);
-    Task UpdateUser(User user);
 }

@@ -2,7 +2,6 @@
 using MoviesArchive.Data.Context;
 using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
-using Serilog;
 
 namespace MoviesArchive.Data.Repositories;
 
@@ -43,21 +42,13 @@ internal class GenreRepository : IGenreRepository
     {
         _db.Genres.Add(genre);
         var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("AddGenreAsync has written 0 state entries");
-        }
         return result;
     }
 
     public async Task<int> UpdateGenre(Genre genre)
     {
         _db.Genres.Update(genre);
-        var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("UpdateGenreAsync has written 0 state entries");
-        }
+        var result = await _db.SaveChangesAsync();        
         return result;
     }
 
@@ -65,10 +56,6 @@ internal class GenreRepository : IGenreRepository
     {
         _db.Genres.Remove(genre);
         var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("RemoveGenreAsync has written 0 state entries");
-        }
         return result;
     }
 }

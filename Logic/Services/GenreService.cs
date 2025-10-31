@@ -2,6 +2,7 @@
 using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
 using MoviesArchive.Logic.IServices;
+using Serilog;
 
 namespace MoviesArchive.Logic.Services;
 
@@ -35,6 +36,10 @@ internal class GenreService : IGenreService
         if (!genreExists)
         {
             var result = await _genreRepository.AddGenre(genre);
+            if (result == 0)
+            {
+                Log.Warning($"{nameof(_genreRepository.AddGenre)} has written 0 state entries");
+            }
             return result == 0 ? ResultStatus.Failed : ResultStatus.Success;
         }
         return ResultStatus.Failed;
@@ -47,6 +52,10 @@ internal class GenreService : IGenreService
         if (!genreExists)
         {
             var result = await _genreRepository.UpdateGenre(genre);
+            if (result == 0)
+            {
+                Log.Warning($"{nameof(_genreRepository.UpdateGenre)} has written 0 state entries");
+            }
             return result == 0 ? ResultStatus.Failed : ResultStatus.Success;
         }
         return ResultStatus.Failed;
@@ -59,9 +68,17 @@ internal class GenreService : IGenreService
         if (genreMovies.Count != 0)
         {
             genreMovies.ForEach(m => m.GenreId = defaultGenre.Id);
-            await _movieRepository.UpdateMovieRange(genreMovies);
+            var updateResult = await _movieRepository.UpdateMovieRange(genreMovies);
+            if (updateResult == 0)
+            {
+                Log.Warning($"{nameof(_movieRepository.UpdateMovieRange)} has written 0 state entries");
+            }
         }
         var result = await _genreRepository.RemoveGenre(genre);
+        if (result == 0)
+        {
+            Log.Warning($"{nameof(_genreRepository.RemoveGenre)} has written 0 state entries");
+        }
         return result == 0 ? ResultStatus.Failed : ResultStatus.Success;
     }
 }

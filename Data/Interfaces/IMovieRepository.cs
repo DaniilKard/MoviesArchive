@@ -15,7 +15,7 @@ public interface IMovieRepository
     Task<int> AddMovie(Movie movie);
     Task<int> AddMovieRange(List<Movie> movies);
     Task<int> UpdateMovie(Movie movie);
-    Task UpdateMovieRange(List<Movie> movies);
+    Task<int> UpdateMovieRange(List<Movie> movies);
     Task<int> RemoveMovie(Movie movie);
     Task<bool> MovieExists(Movie movie);
 }

@@ -2,7 +2,6 @@
 using MoviesArchive.Data.Context;
 using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
-using Serilog;
 
 namespace MoviesArchive.Data.Repositories;
 
@@ -25,10 +24,6 @@ internal class IpAddressRepository : IIpAddressRepository
     {
         _db.IpAddresses.Add(ipAddress);
         var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("AddIpAddress has written 0 state entries");
-        }
         return result;
     }
 
@@ -36,10 +31,6 @@ internal class IpAddressRepository : IIpAddressRepository
     {
         _db.IpAddresses.Update(ipAddress);
         var result = await _db.SaveChangesAsync();
-        if (result == 0)
-        {
-            Log.Warning("UpdateIpAddressUsers has written 0 state entries");
-        }
         return result;
     }
 }
