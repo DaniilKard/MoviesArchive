@@ -26,7 +26,8 @@ public class Program
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Warning()
-            .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .Enrich.FromLogContext()
+            .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [Name: \"{UserName}\"] [{Level:u3}] {Message:lj}{NewLine}{Exception}")
             .CreateLogger();
 
         builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlite(connection));
@@ -34,7 +35,7 @@ public class Program
         builder.Services.AddFluentValidationAutoValidation();
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
         builder.Services.AddSerilog();
-        builder.Services.AddControllersWithViews();       
+        builder.Services.AddControllersWithViews();
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
         {
             options.LoginPath = "/user/login";
@@ -59,6 +60,7 @@ public class Program
         //app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseMiddleware<LogUserNameMiddleware>();
 
         app.MapStaticAssets();
         app.MapControllerRoute(

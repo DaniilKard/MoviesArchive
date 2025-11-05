@@ -2,11 +2,13 @@
   {
     "outputFileName": "wwwroot/js/indexBundle.js",
     "inputFiles": [
-      "wwwroot/js/index.js"
+      "wwwroot/js/indexModal.js",
+      "wwwroot/js/indexMovieButtons.js"
     ],
     "minify": {
       "enabled": true,
-      "renameLocals": false
-    }
+      "renameLocals": true
+    },
+    "sourceMap": false
   }
 ]

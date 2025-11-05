@@ -1,5 +1,8 @@
-﻿namespace MoviesArchive.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
 
+namespace MoviesArchive.Data.Models;
+
+[Index(nameof(Name), IsUnique = true)]
 public class User
 {
     public int Id { get; set; }

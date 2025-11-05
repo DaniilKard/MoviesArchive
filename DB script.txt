@@ -44,9 +44,11 @@ CREATE INDEX IF NOT EXISTS "IX_Movies_GenreId" ON "Movies" ("GenreId");
 
 CREATE INDEX IF NOT EXISTS "IX_Movies_UserId" ON "Movies" ("UserId");
 
+CREATE UNIQUE INDEX IF NOT EXISTS "IX_Users_Name" ON "Users" ("Name");
+
 INSERT OR IGNORE INTO Genres (Id, Name) VALUES 
 (1, 'undefined'), (2, 'Comedy'), (3, 'Drama'), (4, 'Horror'), (5, 'Thriller'), (6, 'Detective'), (7, 'Crime'), (8, 'Action'), 
 (9, 'Adventure'), (10, 'Science Fiction'), (11, 'Fantasy'), (12, 'Animation'), (13, 'Romance'), (14, 'Western'), 
 (15, 'Documentary'), (16, 'Mystery'), (17, 'History'), (18, 'Series'), (19, 'Anime'), (20, 'Other'), (21, 'Watch Later');
 
-INSERT OR IGNORE INTO Users (Id, Name, Password, Role, Email) VALUES (1, 'admin', '12345678', 'Admin', 'admin@email.com');
+INSERT OR IGNORE INTO Users (Id, Name, Password, Role, Email) VALUES (1, 'admin', 'AQAAAAIAAYagAAAAEO/vbIrDru84lZOxD3lyVnRFDe7h/vphNdzLEfQ8unT2nBKFXg1oN9erLxOlrzs9Xg==', 'Admin', 'admin@email.com');

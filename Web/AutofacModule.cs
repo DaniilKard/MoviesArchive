@@ -1,5 +1,7 @@
 ﻿using Autofac;
+using Microsoft.AspNetCore.Identity;
 using MoviesArchive.Data.Interfaces;
+using MoviesArchive.Data.Models;
 using MoviesArchive.Logic.Authorization;
 using MoviesArchive.Logic.IServices;
 using MoviesArchive.Logic.Parsers;
@@ -14,6 +16,7 @@ public class AutofacModule : Module
         var logicAssembly = typeof(IMovieService).Assembly;
 
         builder.RegisterType<AuthorizeWithCookies>().As<IUserAuthorize>();
+        builder.RegisterType<PasswordHasher<User>>().As<IPasswordHasher<User>>();
 
         builder.RegisterAssemblyTypes(logicAssembly)
             .Where(t => t.Name.EndsWith("Parser"))

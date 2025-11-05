@@ -14,9 +14,9 @@ internal class UserRepository : IUserRepository
         _db = database;
     }
 
-    public async Task<User?> GetUser(string name, string password)
+    public async Task<User?> GetUser(string name)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Name == name && u.Password == password);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Name == name);
         return user;
     }
 

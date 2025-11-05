@@ -1,6 +1,5 @@
 ﻿// Add file to database button and its modal window
-document.getElementById("fetchMoviesBtn").addEventListener("click", () => 
-{
+document.getElementById("fetchMoviesBtn").addEventListener("click", () => {
     fetch('/Movie/AddFileToDatabase')
         .then(response => response.status)
         .then(data => {
@@ -37,7 +36,8 @@ function createModal(data) {
             modalStatusMsg.textContent = "An error occurred: your profile already contains all movies listed in file or folder contains multiple .md or .docx files";
             break;
         case 404:
-            modalStatusMsg.textContent = "An error occurred: folder does not exist or contains no files with appropriate extension (.md or .docx)"
+            modalStatusMsg.textContent = "An error occurred: folder does not exist or contains no files with appropriate extension (.md or .docx)";
+            break;
         default:
             modalStatusMsg.textContent = "Unknown error, movies are not added";
     }
@@ -65,7 +65,7 @@ function createModal(data) {
         modalConfirmBtn.addEventListener("click", () => {
             location.reload();
         });
-        modalCancelBtn.addEventListener("click", removeModal)
+        modalCancelBtn.addEventListener("click", removeModal);
     }
     else {
         modalConfirmBtn.addEventListener("click", removeModal);
@@ -104,68 +104,5 @@ function createModal(data) {
         modal.removeEventListener("mouseup", stopDragElement);
         modal.removeEventListener("mousemove", startDragElement);
         modal.removeEventListener("mouseleave", stopDragElement);
-    }
-}
-
-// Movie "Edit" and "Delete" buttons
-const movieRows = document.getElementsByClassName('body__row');
-for (let i = 0; i < movieRows.length; i++) {
-    movieRows[i].addEventListener("mouseenter", () => {
-        const linksBtnCheck = document.getElementById("body__row_movie_btns_menu");
-        if (linksBtnCheck) {
-            return;
-        }
-
-        const linksWrapper = document.createElement("div");
-        linksWrapper.id = "body__row_movie_btns";
-        linksWrapper.className = "body__row_movie_btns";
-
-        const linksBtn = document.createElement("div");
-        linksBtn.textContent = "●●●";
-        linksBtn.id = "body__row_movie_btns_menu";
-        linksBtn.className = "body__row_movie_btns_menu";
-        linksWrapper.append(linksBtn);
-        movieRows[i].append(linksWrapper);
-        linksWrapper.addEventListener("click", addButtonsBlock);
-
-        function addButtonsBlock() {
-            const buttonsContainer = document.getElementById("body__row_movie_btns_container");
-            if (!buttonsContainer) {
-                const buttonsContainer = document.createElement("div");
-                buttonsContainer.id = "body__row_movie_btns_container";
-                buttonsContainer.className = "body__row_movie_btns_container";
-
-                const editBtn = document.createElement("a");
-                const deleteBtn = document.createElement("a");
-
-                editBtn.innerHTML = '<img src="img/editBtn.svg" /> Edit';
-                deleteBtn.innerHTML = '<img src="img/deleteBtn.svg" /> Delete';
-                editBtn.className = "body__row_movie_btns_container_edit";
-                deleteBtn.className = "body__row_movie_btns_container_delete";
-
-                let rowMovieId = movieRows[i].getAttribute("data-id");
-                editBtn.href = `/Movie/EditMovie/${rowMovieId}`;
-                deleteBtn.href = `/Movie/DeleteMovie/${rowMovieId}`;
-
-                buttonsContainer.append(editBtn, deleteBtn);
-                linksWrapper.append(buttonsContainer);
-
-                document.addEventListener("click", (e) => {
-                    if (e.target != linksBtn) {
-                        linksWrapper.remove();
-                    }
-                });
-            }
-        }
-    });
-
-    movieRows[i].addEventListener("mouseleave", removeBtnsContainerOnLeave);
-}
-
-function removeBtnsContainerOnLeave() {
-    const buttonsContainer = document.getElementById("body__row_movie_btns_container");
-    const wrapper = document.getElementById("body__row_movie_btns");
-    if (!buttonsContainer && wrapper) {
-        wrapper.remove();
     }
 }

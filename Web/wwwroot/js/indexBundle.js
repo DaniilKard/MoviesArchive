@@ -1,6 +1,5 @@
 // Add file to database button and its modal window
-document.getElementById("fetchMoviesBtn").addEventListener("click", () => 
-{
+document.getElementById("fetchMoviesBtn").addEventListener("click", () => {
     fetch('/Movie/AddFileToDatabase')
         .then(response => response.status)
         .then(data => {
@@ -37,7 +36,8 @@ function createModal(data) {
             modalStatusMsg.textContent = "An error occurred: your profile already contains all movies listed in file or folder contains multiple .md or .docx files";
             break;
         case 404:
-            modalStatusMsg.textContent = "An error occurred: folder does not exist or contains no files with appropriate extension (.md or .docx)"
+            modalStatusMsg.textContent = "An error occurred: folder does not exist or contains no files with appropriate extension (.md or .docx)";
+            break;
         default:
             modalStatusMsg.textContent = "Unknown error, movies are not added";
     }
@@ -65,7 +65,7 @@ function createModal(data) {
         modalConfirmBtn.addEventListener("click", () => {
             location.reload();
         });
-        modalCancelBtn.addEventListener("click", removeModal)
+        modalCancelBtn.addEventListener("click", removeModal);
     }
     else {
         modalConfirmBtn.addEventListener("click", removeModal);
@@ -106,7 +106,6 @@ function createModal(data) {
         modal.removeEventListener("mouseleave", stopDragElement);
     }
 }
-
 // Movie "Edit" and "Delete" buttons
 const movieRows = document.getElementsByClassName('body__row');
 for (let i = 0; i < movieRows.length; i++) {
@@ -147,10 +146,12 @@ for (let i = 0; i < movieRows.length; i++) {
                 editBtn.href = `/Movie/EditMovie/${rowMovieId}`;
                 deleteBtn.href = `/Movie/DeleteMovie/${rowMovieId}`;
 
+                const linksWrapper = document.getElementById("body__row_movie_btns");
                 buttonsContainer.append(editBtn, deleteBtn);
                 linksWrapper.append(buttonsContainer);
 
                 document.addEventListener("click", (e) => {
+                    const linksBtn = document.getElementById("body__row_movie_btns_menu");
                     if (e.target != linksBtn) {
                         linksWrapper.remove();
                     }
@@ -158,7 +159,6 @@ for (let i = 0; i < movieRows.length; i++) {
             }
         }
     });
-
     movieRows[i].addEventListener("mouseleave", removeBtnsContainerOnLeave);
 }
 

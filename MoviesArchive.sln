@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesArchive.Logic", "Logi
 		{177928C3-81A9-4607-A3C8-684346562517} = {177928C3-81A9-4607-A3C8-684346562517}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesArchive.Tests", "MoviesArchive.Tests\MoviesArchive.Tests.csproj", "{90D6891E-12DD-4B58-9F18-14BA930AC5ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesArchive.Tests", "Tests\MoviesArchive.Tests.csproj", "{90D6891E-12DD-4B58-9F18-14BA930AC5ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

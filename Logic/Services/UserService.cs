@@ -1,4 +1,5 @@
-﻿using MoviesArchive.Data.Enums;
+﻿using Microsoft.AspNetCore.Identity;
+using MoviesArchive.Data.Enums;
 using MoviesArchive.Data.Interfaces;
 using MoviesArchive.Data.Models;
 using MoviesArchive.Logic.Authorization;
@@ -12,12 +13,14 @@ internal class UserService : IUserService
     private readonly IUserAuthorize _userAuthorize;
     private readonly IUserRepository _userRepository;
     private readonly IIpAddressRepository _ipAddressRepository;
+    private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UserService(IUserAuthorize userAuthorize, IUserRepository userRepository, IIpAddressRepository ipAddressRepository)
+    public UserService(IUserAuthorize userAuthorize, IUserRepository userRepository, IIpAddressRepository ipAddressRepository, IPasswordHasher<User> passwordHasher)
     {
         _userRepository = userRepository;
         _userAuthorize = userAuthorize;
         _ipAddressRepository = ipAddressRepository;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task<List<User>> GetUsersList()
@@ -38,6 +41,9 @@ internal class UserService : IUserService
         {
             return ResultStatus.Failed;
         }
+
+        var hashedPassword = _passwordHasher.HashPassword(user, user.Password);
+        user.Password = hashedPassword;
 
         var ipAddressDB = await _ipAddressRepository.GetIpAddressWithUsers(userIp);
         user.IpAddresses = new List<IpAddress>
@@ -61,8 +67,14 @@ internal class UserService : IUserService
 
     public async Task<ResultStatus> LoginUser(string name, string password, string userIp)
     {
-        var user = await _userRepository.GetUser(name, password);
+        var user = await _userRepository.GetUser(name);
         if (user is null)
+        {
+            return ResultStatus.NotFound;
+        }
+
+        var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
+        if (verificationResult != PasswordVerificationResult.Success)
         {
             return ResultStatus.NotFound;
         }
