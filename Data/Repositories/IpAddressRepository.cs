@@ -14,6 +14,12 @@ internal class IpAddressRepository : IIpAddressRepository
         _db = database;
     }
 
+    public async Task<IpAddress?> GetIpAddress(string ipValue)
+    {
+        var ipAddress = await _db.IpAddresses.FirstOrDefaultAsync(ip => ip.Value == ipValue);
+        return ipAddress;
+    }
+
     public async Task<IpAddress?> GetIpAddressWithUsers(string ipValue)
     {
         var ipAddress = await _db.IpAddresses.Include(ip => ip.Users).FirstOrDefaultAsync(ip => ip.Value == ipValue);

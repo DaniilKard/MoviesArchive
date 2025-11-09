@@ -41,7 +41,7 @@ internal class UserRepository : IUserRepository
 
     public async Task<bool> UserNameOrEmailExists(string name, string email)
     {
-        var nameOrEmailExists = await _db.Users.AsNoTracking().AnyAsync(u => u.Email.ToLower() == email.ToLower() || u.Name.ToLower() == name.ToLower());
+        var nameOrEmailExists = await _db.Users.AsNoTracking().AnyAsync(u => u.Email == email || u.Name.ToLower() == name.ToLower());
         return nameOrEmailExists;
     }
 }

@@ -30,30 +30,40 @@ internal class UserService : IUserService
         return userWithoutAdmin;
     }
 
-    public async Task<ResultStatus> RegisterUser(User user, string userIp)
+    public async Task<ResultStatus> RegisterUser(string name, string email, string password, string userIp)
     {
-        if (string.IsNullOrWhiteSpace(user.Name) || string.IsNullOrWhiteSpace(user.Email))
+        var userName = name;
+        var userEmail = email.ToLower();
+        if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(userEmail))
         {
             return ResultStatus.Failed;
         }
-        var nameOrEmailExists = await _userRepository.UserNameOrEmailExists(user.Name, user.Email);
+        var nameOrEmailExists = await _userRepository.UserNameOrEmailExists(userName, userEmail);
         if (nameOrEmailExists)
         {
             return ResultStatus.Failed;
         }
 
-        var hashedPassword = _passwordHasher.HashPassword(user, user.Password);
-        user.Password = hashedPassword;
-
-        var ipAddressDB = await _ipAddressRepository.GetIpAddressWithUsers(userIp);
-        user.IpAddresses = new List<IpAddress>
+        var userRegistrationDate = DateOnly.FromDateTime(DateTime.Now);
+        var ipAddressDB = await _ipAddressRepository.GetIpAddress(userIp);
+        var userIpAddress = new List<IpAddress>
         {
-            ipAddressDB ?? 
+            ipAddressDB ??
             new IpAddress
             {
                 Value = userIp
             }
         };
+        var user = new User
+        {
+            Name = userName,
+            Email = userEmail,
+            RegistrationDate = userRegistrationDate,
+            IpAddresses = userIpAddress,
+            Role = "User"
+        };
+        var userPassword = _passwordHasher.HashPassword(user, password);
+        user.Password = userPassword;
 
         var result = await _userRepository.AddUser(user);
         if (result == 0)

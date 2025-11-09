@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesArchive.Data.Enums;
-using MoviesArchive.Data.Models;
 using MoviesArchive.Logic.IServices;
 using MoviesArchive.Web.ViewModels;
 
@@ -35,6 +34,7 @@ public class UserController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(UserLoginVM model)
     {
         if (!ModelState.IsValid)
@@ -42,7 +42,6 @@ public class UserController : Controller
             return View(model);
         }
         var userIp = HttpContext.Connection.RemoteIpAddress.ToString();
-
         var result = await _userService.LoginUser(model.Name, model.Password, userIp);
         if (result != ResultStatus.Success)
         {
@@ -65,10 +64,8 @@ public class UserController : Controller
         {
             return View(model);
         }
-        var user = model.Adapt<User>();
         var userIp = HttpContext.Connection.RemoteIpAddress.ToString();
-
-        var result = await _userService.RegisterUser(user, userIp);
+        var result = await _userService.RegisterUser(model.Name, model.Email, model.Password, userIp);
         if (result != ResultStatus.Success)
         {
             ModelState.AddModelError("Email", "Email is already taken");

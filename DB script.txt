@@ -51,4 +51,4 @@ INSERT OR IGNORE INTO Genres (Id, Name) VALUES
 (9, 'Adventure'), (10, 'Science Fiction'), (11, 'Fantasy'), (12, 'Animation'), (13, 'Romance'), (14, 'Western'), 
 (15, 'Documentary'), (16, 'Mystery'), (17, 'History'), (18, 'Series'), (19, 'Anime'), (20, 'Other'), (21, 'Watch Later');
 
-INSERT OR IGNORE INTO Users (Id, Name, Password, Role, Email) VALUES (1, 'admin', 'AQAAAAIAAYagAAAAEO/vbIrDru84lZOxD3lyVnRFDe7h/vphNdzLEfQ8unT2nBKFXg1oN9erLxOlrzs9Xg==', 'Admin', 'admin@email.com');
+INSERT OR IGNORE INTO Users (Id, Name, Password, Role, Email, RegistrationDate) VALUES (1, 'admin', 'AQAAAAIAAYagAAAAEO/vbIrDru84lZOxD3lyVnRFDe7h/vphNdzLEfQ8unT2nBKFXg1oN9erLxOlrzs9Xg==', 'Admin', 'admin@email.com', '0001-01-01');
