@@ -20,7 +20,9 @@ internal class MovieRepository : IMovieRepository
     {
         var count = await _db.Movies
             .AsNoTracking()
-            .Where(m => (searchGenreId == 0 || m.GenreId == searchGenreId) && (searchLine == null || m.Title.Contains(searchLine)))
+            .Where(m =>
+                (searchGenreId == 0 || m.GenreId == searchGenreId) && 
+                (searchLine == null || m.Title.ToLower().Contains(searchLine.ToLower())))
             .CountAsync();
         return count;
     }
@@ -29,7 +31,10 @@ internal class MovieRepository : IMovieRepository
     {
         var count = await _db.Movies
             .AsNoTracking()
-            .Where(m => (m.UserId == userId) && (searchGenreId == 0 || m.GenreId == searchGenreId) && (searchLine == null || m.Title.Contains(searchLine)))
+            .Where(m => 
+                (m.UserId == userId) && 
+                (searchGenreId == 0 || m.GenreId == searchGenreId) &&
+                (searchLine == null || m.Title.ToLower().Contains(searchLine.ToLower())))
             .CountAsync();
         return count;
     }
@@ -57,7 +62,9 @@ internal class MovieRepository : IMovieRepository
         var sortedMovies = await _db.Movies
             .AsNoTracking()
             .Include(m => m.Genre)
-            .Where(m => (searchGenreId == 0 || m.GenreId == searchGenreId) && EF.Functions.Like(m.Title, $"%{searchLine}%"))
+            .Where(m => 
+                (searchGenreId == 0 || m.GenreId == searchGenreId) &&
+                (searchLine == null || m.Title.ToLower().Contains(searchLine.ToLower())))
             .OrderMovies(sort)
             .Skip((pageNum - 1) * elementsOnPage)
             .Take(elementsOnPage)
@@ -70,7 +77,10 @@ internal class MovieRepository : IMovieRepository
         var sortedMovies = await _db.Movies
             .AsNoTracking()
             .Include(m => m.Genre)
-            .Where(m => (m.UserId == userId) && (searchGenreId == 0 || m.GenreId == searchGenreId) && EF.Functions.Like(m.Title, $"%{searchLine}%"))
+            .Where(m => 
+                (m.UserId == userId) && 
+                (searchGenreId == 0 || m.GenreId == searchGenreId) &&
+                (searchLine == null || m.Title.ToLower().Contains(searchLine.ToLower())))
             .OrderMovies(sort)
             .Skip((pageNum - 1) * elementsOnPage)
             .Take(elementsOnPage)

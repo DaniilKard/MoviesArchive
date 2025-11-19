@@ -72,6 +72,7 @@ button {
     padding: 7px 3%;
     display: flex;
     flex-flow: row;
+    font-size: 18px;
 }
 
 .nav_img {
@@ -83,9 +84,7 @@ button {
     display: flex;
     margin-bottom: 0;
     list-style: none;
-    width: -moz-available;
     align-items: center;
-    font-size: 18px;
     gap: 20px;
 }
 
@@ -104,6 +103,7 @@ button {
     margin-left: auto;
     display: flex;
     gap: 5px;
+    align-items: center;
 }
 
 .main {
@@ -190,10 +190,6 @@ button {
     background-color: lightgreen;
 }
 
-.content-min {
-    width: min-content;
-}
-
 .modal {
     position: fixed;
     top: 0;
@@ -271,7 +267,7 @@ button {
     margin-block: -20px 35px;
     gap: 30px;
     padding: 17px 3%;
-    background-color: #eee;
+    background-color: #eeeeee0d;
 }
 
 .menu p {
@@ -282,7 +278,7 @@ button {
     display: flex;
     border: solid 1px grey;
     border-radius: 13px;
-    background-color: #f4f4f4;
+    background-color: white;
     margin-left: auto;
 }
 

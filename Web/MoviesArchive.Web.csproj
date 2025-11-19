@@ -7,10 +7,6 @@
 	<ScopedCssEnabled>false</ScopedCssEnabled>
 	<RazorCompileOnPublish>true</RazorCompileOnPublish>
 	<UserSecretsId>dotnet-Worker-f24a1da3-42b7-474f-9933-fcffa0e9267a</UserSecretsId>
-	<OutputType>exe</OutputType>
-	<PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
-	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
-	<PlatformTarget>x64</PlatformTarget>
 	<IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
   </PropertyGroup>
 
@@ -27,10 +23,6 @@
 
   <ItemGroup>
 	  <ProjectReference Include="..\Logic\MoviesArchive.Logic.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Logs\" />
   </ItemGroup>
 
   <ItemGroup>

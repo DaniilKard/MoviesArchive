@@ -70,6 +70,17 @@ function createModal(data) {
     else {
         modalConfirmBtn.addEventListener("click", removeModal);
     }
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            if (data == 200) {
+                location.reload();
+            }
+            else {
+                removeModal();
+            }
+        }
+    });
 
     function removeModal() {
         modal.remove();
@@ -159,10 +170,10 @@ for (let i = 0; i < movieRows.length; i++) {
             }
         }
     });
-    movieRows[i].addEventListener("mouseleave", removeBtnsContainerOnLeave);
+    movieRows[i].addEventListener("mouseleave", removeBtns);
 }
 
-function removeBtnsContainerOnLeave() {
+function removeBtns() {
     const buttonsContainer = document.getElementById("body__row_movie_btns_container");
     const wrapper = document.getElementById("body__row_movie_btns");
     if (!buttonsContainer && wrapper) {

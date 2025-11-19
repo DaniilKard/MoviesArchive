@@ -2,10 +2,15 @@
 const modalConfirmBtn = document.getElementById("modal__block_btns_confirm");
 const modalCloseBtn = document.getElementById("modal__block_close");
 
-modalConfirmBtn.addEventListener("click", removeModalWindow);
-modalCloseBtn.addEventListener("click", removeModalWindow);
+modalConfirmBtn.addEventListener("click", removeModal);
+modalCloseBtn.addEventListener("click", removeModal);
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        removeModal();
+    }
+});
 
-function removeModalWindow() {
+function removeModal() {
     modal.remove();
 }
 

@@ -20,18 +20,19 @@ form input:focus, form textarea:focus {
 .form {
     display: flex;
     flex-direction: column;
-    width: 400px;
-    align-items: center;
+    width: 210px;
+    align-items: baseline;
 }
 
 .form p {
-    width: 50%
+    width: 100%
 }
 
 .form__input-width-full {
     border: solid 2px lightgray;
     border-radius: 9px;
-    width: -moz-available;
+    width: 100%;
+    font: inherit;
 }
 
 .form__input-width-half {
@@ -44,13 +45,9 @@ form input:focus, form textarea:focus {
     border: solid 2px lightgray;
     border-radius: 9px;
     cursor: pointer;
-    width: -moz-available;
+    width: 100%;
 }
 
     .form__list:hover {
-        background-color: #d5d5d5;
-    }
-    
-    .form__list:active {
-        background-color: #aaa;
+        border: outset 2px #b1b1b1;
     }

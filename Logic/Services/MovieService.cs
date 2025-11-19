@@ -132,7 +132,7 @@ public class MovieService : IMovieService
         }
         catch (Exception ex)
         {
-            Log.Error($"{nameof(AddFileToDatabase)} error: {ex.Message}");
+            Log.Error($"{nameof(AddFileToDatabase)} exception: {ex.Message}");
             return ResultStatus.NotFound;
         }
         return ResultStatus.Failed;

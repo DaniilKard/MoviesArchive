@@ -4,30 +4,32 @@
 
 2. Создать базу данных с помощью скрипта "DB script.txt";
 
-3. Открыть solution проекта (.sln файл);
+3. В файле "appsettings.json" указать абсолютный путь к базе данных;
 
-4. Нажать ПКМ "MoviesArchive.Web" > Publish;
+4. Открыть solution проекта (.sln файл);
 
-5. В открывшемся окне нажать "Add a publish profile" > Folder > Finish > Close;
+5. Нажать правой кнопкой мыши (далее ПКМ) по названию проекта "MoviesArchive.Web" > Publish;
 
-6. Нажать "Show all settings" и убедиться, что выбраны следующие значения:
+6. В открывшемся окне нажать "Add a publish profile" > Folder > Finish > Close;
+
+7. Нажать "Show all settings" и убедиться, что выбраны следующие значения:
 Configuration: Release
 Target Framework: net9.0
 Deployment Mode: Self-contained
 Target Runtime: win-x64
 
-7. В списке "File Publish Options" должны быть отмечены ТОЛЬКО пункты:
+8. В списке "File Publish Options" должны быть отмечены ТОЛЬКО пункты:
 ☑ Produce single file
 ☑ Enable ReadyToRun compilation
 ☑ Delete all existing files prior to publish
 
-8. Нажать кнопку "Publish";
+9. Нажать кнопку "Publish";
 
-9. Когда появится окно "Publish succeeded on ..." нажать на "Navigate";
+10. Когда появится окно "Publish succeeded on ..." нажать на "Navigate";
 
-10. Нажать Windows + R > написать "cmd" > Enter;
+11. Нажать Windows+R > написать "cmd" > Enter;
 
-11. В открывшейся консоли написать следующую команду (заменив путь к файлу MoviesArchive.exe на тот, который открылся ранее при нажатии на кнопку "Navigate"):
+12. В открывшейся консоли написать следующую команду (заменив путь к файлу MoviesArchive.exe на тот, который открылся ранее при нажатии на кнопку "Navigate"):
 
 sc create MoviesArchive binpath= "C:\Users\user\Desktop\MoviesArchive\MoviesArchive-master\Web\bin\Release\net9.0\win-x64\publish\MoviesArchive.Web.exe"
 
@@ -35,19 +37,14 @@ sc create MoviesArchive binpath= "C:\Users\user\Desktop\MoviesArchive\MoviesArch
 
 [SC] CreateService SUCCESS
 
-12. Открыть приложение Windows Services. Это можно сделать нажав Windows+R > написать "services.msc" > Enter;
+13. Открыть приложение Windows Services. Это можно сделать нажав Windows+R > написать "services.msc" > Enter;
 
-13. Найти сервис "MoviesArchive" и запустить его (например, ПКМ > Start). Если появилась ошибка 1053, см. пункт 13.1;
-13.1 Для решения ошибки нужно нажать ПКМ по сервису > Properties > Log On > This Account > Browse > Advanced > Find Now;
-13.2 Из списка Search Results выбрать текущего пользователя (его имя совпадает с именем пользователя в папке C:\Users) и, при необходимости, ввести для него пароль;
-13.3 Нажать Apply в окне "MoviesArchive Properties";
-
-14. Снова попробовать запустить сервис MoviesArchive;
+14. Найти сервис "MoviesArchive" и запустить его (например, ПКМ > Start);
 
 15. Теперь можно открыть страницу входа на сайт по адресу:
 
-https://localhost:5001/user/login
+http://localhost:5000/user/login
 
-16. Для удаления сервиса нужно сначала его остановить, а затем написать команду:
+16. Для удаления сервиса нужно сначала его остановить, а затем написать в командной строке:
 
 sc delete MoviesArchive

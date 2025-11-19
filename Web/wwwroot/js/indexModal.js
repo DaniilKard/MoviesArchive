@@ -70,6 +70,17 @@ function createModal(data) {
     else {
         modalConfirmBtn.addEventListener("click", removeModal);
     }
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            if (data == 200) {
+                location.reload();
+            }
+            else {
+                removeModal();
+            }
+        }
+    });
 
     function removeModal() {
         modal.remove();

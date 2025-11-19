@@ -6,7 +6,6 @@
     <title>@RenderSection("Title")</title>
     <link rel="icon" href="~/favicon.svg" />
     @RenderSection("Styles", required: false)
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -26,14 +25,14 @@
                         <a class="nav_list_link" asp-controller="User" asp-action="UserIndex">Users</a>
                     </li>
                 }
-                @if (User.Identity is not null && User.Identity.IsAuthenticated)
-                {
-                    <li class="nav_list_logout">
-                        <div class="nav_list_name">@User.Identity.Name - </div>
-                        <a class="nav_list_link" asp-controller="User" asp-action="Logout">Logout</a>
-                    </li>
-                }
             </ul>
+            @if (User.Identity is not null && User.Identity.IsAuthenticated)
+            {
+                <div class="nav_list_logout">
+                    <div class="nav_list_name">@User.Identity.Name - </div>
+                    <a class="nav_list_link" asp-controller="User" asp-action="Logout">Logout</a>
+                </div>
+            }
         </nav>
     </header>
     <main id="main" class="main">

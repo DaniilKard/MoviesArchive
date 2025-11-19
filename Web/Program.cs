@@ -8,7 +8,6 @@ using MoviesArchive.Data.Context;
 using MoviesArchive.Logic;
 using MoviesArchive.Web.MappingConfiguration;
 using Serilog;
-using System.Net;
 
 namespace MoviesArchive.Web;
 
@@ -18,22 +17,16 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         var connection = builder.Configuration.GetConnectionString("DefaultConnection");
-
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
         builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
         {
             containerBuilder.RegisterModule(new AutofacModule());
         });
-        builder.WebHost.UseKestrel(options =>
+
+        builder.WebHost.ConfigureKestrel(serverOptions =>
         {
-            options.Listen(IPAddress.Loopback, 5000);
-            options.Listen(IPAddress.Loopback, 5001, listenOptions =>
-            {
-                listenOptions.UseHttps();
-            });
+            serverOptions.ListenAnyIP(5000);
         });
-        builder.WebHost.UseIIS();
-        builder.Host.UseWindowsService();
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Warning()
@@ -54,13 +47,6 @@ public class Program
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddWindowsService();
         builder.Services.AddHostedService<WorkerService>();
-
-        builder.Services.AddHsts(options =>
-        {
-            options.Preload = true;
-            options.IncludeSubDomains = true;
-            options.MaxAge = TimeSpan.FromDays(60);
-        });
         
         Global.ElementsOnOnePage = builder.Configuration.GetValue<int>("ElementsOnOnePage");
         Global.MoviesFilePath = builder.Configuration.GetValue<string>("MoviesFilePath");
@@ -75,8 +61,9 @@ public class Program
             app.UseHsts();
         }
 
-        //app.UseHttpsRedirection();
-        //app.UseRouting();
+        app.UseHttpsRedirection();
+        app.UseRouting();
+
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseMiddleware<LogUserNameMiddleware>();

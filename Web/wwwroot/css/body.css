@@ -1,4 +1,10 @@
-﻿.body {
+﻿@media (max-width: 1080px) {
+    .body__header {
+        font-size: 12px;
+    }
+}
+
+.body {
     width: 100%;
     list-style-type: none;
     display: flex;
