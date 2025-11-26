@@ -12,7 +12,6 @@ MoviesArchive is a web-based project for storing movie data. It's an ASP .NET Co
 * ORM: Entity Framework;
 * Testing: xUnit, Moq;
 * Cookie-based authentication;
-* Cookie-based authentication;
 * Bundling & Minification.
 
 ## Design patterns
